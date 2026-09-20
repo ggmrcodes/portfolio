@@ -1,0 +1,352 @@
+@import 'tailwindcss';
+
+/* ------------------------------------------------------------------
+   Theme tokens. Colours live on <html data-theme="dark|light"> so the
+   whole palette switches with one attribute (see hooks/useTheme.ts).
+   ------------------------------------------------------------------ */
+:root,
+[data-theme='dark'] {
+  --base: #090e1a;
+  --panel: #0f1626;
+  --ink: #e8eef5;
+  --muted: #8a97ab;
+  --line: #1f2b40;
+  --accent: #34d399;
+  --cyan: #22d3ee;
+  --amber: #fb923c;
+  --on-accent: #06130d;
+  --scanline: 0.32;
+  color-scheme: dark;
+}
+
+[data-theme='light'] {
+  --base: #f4efe3;
+  --panel: #fffdf6;
+  --ink: #10182b;
+  --muted: #56637a;
+  --line: #d6cdb8;
+  --accent: #0f9d6e;
+  --cyan: #0e8fa8;
+  --amber: #df5f16;
+  --on-accent: #ffffff;
+  --scanline: 0.1;
+  color-scheme: light;
+}
+
+/* Expose tokens to Tailwind so classes like bg-panel / text-accent work.
+   `inline` makes utilities reference var(--x) directly, which is what lets
+   the theme switch at runtime. */
+@theme inline {
+  --color-base: var(--base);
+  --color-panel: var(--panel);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-cyan: var(--cyan);
+  --color-amber: var(--amber);
+  --color-on-accent: var(--on-accent);
+  --font-pixel: 'Press Start 2P', ui-monospace, monospace;
+  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+}
+
+/* ------------------------------------------------------------------
+   Base
+   ------------------------------------------------------------------ */
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--base);
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 15px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100svh;
+}
+
+::selection {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+/* CRT scanlines. Purely decorative, never intercepts clicks. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  z-index: 70;
+  pointer-events: none;
+  opacity: var(--scanline);
+  background: repeating-linear-gradient(
+    0deg,
+    rgba(0, 0, 0, 0.14) 0 1px,
+    transparent 1px 3px
+  );
+}
+
+.skip-link {
+  position: fixed;
+  top: -100px;
+  left: 16px;
+  z-index: 100;
+  padding: 10px 14px;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-family: var(--font-pixel);
+  font-size: 10px;
+}
+.skip-link:focus {
+  top: 12px;
+}
+
+/* ------------------------------------------------------------------
+   Retro primitives
+   ------------------------------------------------------------------ */
+.pixel-frame {
+  position: relative;
+  background: var(--panel);
+  border: 2px solid var(--ink);
+  box-shadow: 5px 5px 0 0 var(--frame-shadow, var(--accent));
+}
+
+/* Notched corner chip, like an old cartridge label */
+.pixel-frame::after {
+  content: '';
+  position: absolute;
+  top: -2px;
+  right: -2px;
+  width: 10px;
+  height: 10px;
+  background: var(--frame-shadow, var(--accent));
+}
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 18px;
+  border: 2px solid var(--ink);
+  background: var(--panel);
+  color: var(--ink);
+  font-family: var(--font-pixel);
+  font-size: 10px;
+  line-height: 1;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  box-shadow: 4px 4px 0 0 var(--ink);
+  cursor: pointer;
+  user-select: none;
+}
+.btn:hover {
+  transform: translate(-2px, -2px);
+  box-shadow: 6px 6px 0 0 var(--ink);
+}
+.btn:active {
+  transform: translate(2px, 2px);
+  box-shadow: 2px 2px 0 0 var(--ink);
+}
+.btn-primary {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.chip {
+  display: inline-block;
+  padding: 2px 8px;
+  border: 1.5px solid var(--line);
+  font-size: 12px;
+  line-height: 1.6;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.filter {
+  padding: 10px 14px;
+  border: 2px solid var(--line);
+  background: transparent;
+  color: var(--muted);
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  text-transform: uppercase;
+  cursor: pointer;
+}
+.filter:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+.filter[aria-pressed='true'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--on-accent);
+  box-shadow: 3px 3px 0 0 var(--ink);
+}
+
+.window-bar {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-bottom: 2px solid var(--ink);
+  font-family: var(--font-pixel);
+  font-size: 9px;
+  color: var(--muted);
+  text-transform: lowercase;
+}
+.window-bar i {
+  width: 9px;
+  height: 9px;
+  display: inline-block;
+}
+
+/* Checkerboard texture used on project card covers */
+.pixel-cover {
+  --c: var(--accent);
+  background-color: color-mix(in srgb, var(--c) 12%, var(--panel));
+  background-image:
+    linear-gradient(45deg, var(--c) 25%, transparent 25%),
+    linear-gradient(-45deg, var(--c) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, var(--c) 75%),
+    linear-gradient(-45deg, transparent 75%, var(--c) 75%);
+  background-size: 14px 14px;
+  background-position:
+    0 0,
+    0 7px,
+    7px -7px,
+    -7px 0;
+  border-bottom: 2px solid var(--ink);
+}
+.pixel-cover > * {
+  position: relative;
+}
+.pixel-cover::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: var(--panel);
+  opacity: 0.82;
+}
+
+/* Sparse pixel "starfield" behind the hero, like an 8-bit night sky. A 96px
+   SVG tile of scattered 2-3px squares, faded out toward the edges. Lives on
+   a pseudo-element so the mask only fades the stars, never the content. */
+.pixel-field::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' shape-rendering='crispEdges' fill='%23324361'%3E%3Crect x='8' y='12' width='2' height='2'/%3E%3Crect x='40' y='4' width='3' height='3'/%3E%3Crect x='72' y='28' width='2' height='2'/%3E%3Crect x='20' y='52' width='2' height='2'/%3E%3Crect x='60' y='68' width='3' height='3'/%3E%3Crect x='88' y='84' width='2' height='2'/%3E%3Crect x='4' y='80' width='2' height='2'/%3E%3Crect x='48' y='40' width='2' height='2'/%3E%3Crect x='30' y='90' width='2' height='2'/%3E%3Crect x='80' y='56' width='2' height='2'/%3E%3C/svg%3E");
+  background-size: 96px 96px;
+  mask-image: radial-gradient(ellipse 75% 75% at 50% 40%, #000 20%, transparent 78%);
+}
+
+[data-theme='light'] .pixel-field::before {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' shape-rendering='crispEdges' fill='%23c4b99f'%3E%3Crect x='8' y='12' width='2' height='2'/%3E%3Crect x='40' y='4' width='3' height='3'/%3E%3Crect x='72' y='28' width='2' height='2'/%3E%3Crect x='20' y='52' width='2' height='2'/%3E%3Crect x='60' y='68' width='3' height='3'/%3E%3Crect x='88' y='84' width='2' height='2'/%3E%3Crect x='4' y='80' width='2' height='2'/%3E%3Crect x='48' y='40' width='2' height='2'/%3E%3Crect x='30' y='90' width='2' height='2'/%3E%3Crect x='80' y='56' width='2' height='2'/%3E%3C/svg%3E");
+}
+
+/* Blinking block cursor */
+.cursor::after {
+  content: '▮';
+  margin-left: 2px;
+  color: var(--accent);
+  animation: blink 1s steps(2, start) infinite;
+}
+@keyframes blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Motion. Everything here is disabled under prefers-reduced-motion.
+   ------------------------------------------------------------------ */
+.reveal {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .reveal {
+    opacity: 0;
+    transform: translateY(14px);
+    transition:
+      opacity 0.55s ease,
+      transform 0.55s cubic-bezier(0.2, 0.8, 0.2, 1);
+    transition-delay: var(--delay, 0ms);
+  }
+  .reveal.is-in {
+    opacity: 1;
+    transform: none;
+  }
+
+  /* Hero boot sequence: each child rises in, staggered by --i */
+  .boot > * {
+    animation: rise 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    animation-delay: calc(var(--i, 0) * 140ms + 120ms);
+  }
+
+  .float {
+    animation: float 6s ease-in-out infinite;
+    animation-delay: var(--d, 0s);
+  }
+
+  .btn,
+  .filter {
+    transition:
+      transform 0.12s steps(2, end),
+      box-shadow 0.12s steps(2, end);
+  }
+
+  .terminal-enter {
+    animation: pop 0.18s steps(3, end) both;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  .cursor::after {
+    animation: none;
+  }
+}
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-14px);
+  }
+}
+
+@keyframes pop {
+  from {
+    opacity: 0;
+    transform: scale(0.96) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}

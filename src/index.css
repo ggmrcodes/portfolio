@@ -310,6 +310,17 @@ body::before {
   opacity: 0.82;
 }
 
+/* The panel a screenshot sits on, so a phone-shaped image has a ground
+   instead of floating in the card. The tone tints it, faintly. */
+.shot {
+  background-color: color-mix(in srgb, var(--c) 8%, var(--panel));
+}
+/* Boring mode frames the shot the way it frames everything else */
+[data-mode='boring'] .shot img {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+}
+
 /* Sparse pixel "starfield" behind the hero, like an 8-bit night sky. A 96px
    SVG tile of scattered 2-3px squares. Hard-edged like everything else in
    this mode: no fade, no gradient. Lives on a pseudo-element behind the content. */

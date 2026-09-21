@@ -25,6 +25,8 @@ export interface Project {
   tone: 'accent' | 'cyan' | 'amber' | 'violet'
   repo?: string
   demo?: string
+  /** Lead with this one: it gets a full-width card at the top of the gallery */
+  featured?: boolean
   /** Optional screenshot path under /public, e.g. '/projects/haemocare.png' */
   image?: string
 }
@@ -32,6 +34,8 @@ export interface Project {
 export const projects: Project[] = [
   {
     slug: 'haemocare',
+    featured: true,
+    image: '/projects/haemocare-login.png',
     title: 'HaemoCare',
     year: '2026',
     categories: ['mobile', 'web'],
@@ -48,6 +52,7 @@ export const projects: Project[] = [
   },
   {
     slug: 'equipose',
+    featured: true,
     title: 'Equipose',
     year: '2026',
     categories: ['ml'],

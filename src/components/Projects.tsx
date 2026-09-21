@@ -51,7 +51,7 @@ export function Projects() {
 
         <ul className="grid gap-6 md:grid-cols-2">
           {visible.map((project, i) => (
-            <li key={project.slug}>
+            <li key={project.slug} className={project.featured ? 'md:col-span-2' : undefined}>
               <Reveal delay={i * 70} className="h-full">
                 <ProjectCard project={project} index={projects.indexOf(project) + 1} />
               </Reveal>

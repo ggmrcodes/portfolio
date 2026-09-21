@@ -18,22 +18,40 @@ const toneVar = {
 }
 
 export function ProjectCard({ project, index }: ProjectCardProps) {
-  const { title, slug, year, summary, highlights, stack, categories, tone, repo, demo, image } = project
+  const { title, slug, year, summary, highlights, stack, categories, tone, repo, demo, image, featured } = project
+
+  // A featured card spans the grid. When it also has a screenshot, the shot
+  // sits beside the text rather than as a banner on top, and is shown whole
+  // rather than cropped. Featured without a screenshot just leads by width.
+  const split = featured && Boolean(image)
+
+  const media = image ? (
+    <div className="shot flex h-full items-center justify-center p-5" style={{ '--c': toneVar[tone] } as CSSProperties}>
+      <img
+        src={image}
+        alt={`${title} on a phone, showing the Thai interface and the language switch`}
+        className="max-h-72 w-auto border-2 border-ink"
+        loading="lazy"
+      />
+    </div>
+  ) : (
+    <div
+      className="pixel-cover relative flex items-end justify-between px-5 pb-3 pt-6"
+      style={{ '--c': toneVar[tone] } as CSSProperties}
+    >
+      <span className="font-pixel text-2xl" style={{ color: toneVar[tone] }}>
+        #{String(index).padStart(2, '0')}
+      </span>
+      <span className="meta font-pixel text-[8px] uppercase text-muted">{year}</span>
+    </div>
+  )
 
   return (
     <PixelFrame title={`${slug}.app`} tone={tone} className="flex h-full flex-col">
-      <div className="pixel-cover relative flex items-end justify-between px-5 pb-3 pt-6" style={{ '--c': toneVar[tone] } as CSSProperties}>
-        {image ? (
-          <img src={image} alt={`${title} screenshot`} className="max-h-40 w-full object-cover object-top" loading="lazy" />
-        ) : (
-          <>
-            <span className="font-pixel text-2xl" style={{ color: toneVar[tone] }}>
-              #{String(index).padStart(2, '0')}
-            </span>
-            <span className="font-pixel text-[8px] uppercase text-muted">{year}</span>
-          </>
-        )}
-      </div>
+      <div className={split ? 'flex flex-1 flex-col md:flex-row' : 'contents'}>
+        <div className={split ? 'shrink-0 border-b-2 border-ink md:w-[300px] md:border-b-0 md:border-r-2' : ''}>
+          {media}
+        </div>
 
       <div className="flex flex-1 flex-col gap-4 p-5 md:p-6">
         <p className="font-pixel text-[8px] uppercase" style={{ color: toneVar[tone] }}>
@@ -74,6 +92,7 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
             )}
           </div>
         )}
+      </div>
       </div>
     </PixelFrame>
   )

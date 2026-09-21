@@ -73,8 +73,6 @@ Everything in this repository is mine. The previous version of this site was gen
 
 ## What I learned
 
-<!-- TODO(Hatayasit): edit this so it is in your own words. It should describe one real challenge. -->
-
 The hardest part was keeping the terminal explainable. My first version put everything in the component: a large `switch` on the command string, and side effects like `window.open` and toggling the theme mixed in with `setState` calls. It worked, but I could not describe it in one breath, and every new command made it worse.
 
 The fix was to split it in two. `runCommand()` in `src/lib/terminal.ts` is a pure function: it takes the input string and returns `{ lines, action? }`, where `action` is a plain object such as `{ type: 'open', url }`. It never touches React or the DOM. `Terminal.tsx` then only does three things: keep the input and printed lines in state, call `runCommand`, and perform whatever action came back. That made the parser trivial to test by hand in the console and made the component about fifty lines.
@@ -95,4 +93,3 @@ A smaller lesson was typography. Pixel fonts have square glyphs, so my fifteen-l
 - Apple's WWDC 2018 talk [Designing Fluid Interfaces](https://developer.apple.com/videos/play/wwdc2018/803/) for the ideas behind the card deck: springs described by response and damping ratio, handing the finger's velocity to the animation, the momentum projection formula, and rubber-banding. The code is my own.
 - MDN for `IntersectionObserver`, `prefers-reduced-motion`, [Pointer events](https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events) and the [View Transition API](https://developer.mozilla.org/en-US/docs/Web/API/View_Transition_API).
 - [Vitest](https://vitest.dev) for the unit tests.
-- Claude Code was used as a pair programmer while rebuilding the site. All code was read, understood, and edited by me. <!-- TODO(Hatayasit): keep, reword, or remove this line. -->

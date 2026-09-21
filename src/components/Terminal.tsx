@@ -6,11 +6,20 @@ interface TerminalProps {
   open: boolean
   onClose: () => void
   onToggleTheme: () => void
+  onToggleBoring: () => void
 }
 
 interface Line {
-  kind: 'in' | 'out'
+  kind: 'in' | 'out' | 'err'
   text: string
+}
+
+/** How each kind of line is printed. Errors are red, and also say what went
+ *  wrong in words, so colour is never the only thing carrying the message. */
+const LINE_CLASS: Record<Line['kind'], string> = {
+  in: 'text-accent',
+  out: 'whitespace-pre-wrap text-ink',
+  err: 'whitespace-pre-wrap text-error',
 }
 
 const WELCOME: Line[] = [
@@ -22,7 +31,7 @@ const WELCOME: Line[] = [
  * A fake shell. State lives here (input, printed lines, command history);
  * what each command means lives in lib/terminal.ts.
  */
-export function Terminal({ open, onClose, onToggleTheme }: TerminalProps) {
+export function Terminal({ open, onClose, onToggleTheme, onToggleBoring }: TerminalProps) {
   const [input, setInput] = useState('')
   const [lines, setLines] = useState<Line[]>(WELCOME)
   const [history, setHistory] = useState<string[]>([])
@@ -47,16 +56,20 @@ export function Terminal({ open, onClose, onToggleTheme }: TerminalProps) {
     setCursor(-1)
     if (!command) return
 
-    const { lines: output, action } = runCommand(command)
+    const { lines: output, action, error } = runCommand(command)
     setHistory((h) => [command, ...h])
 
     if (action?.type === 'clear') {
       setLines([])
     } else {
-      setLines((prev) => [...prev, { kind: 'in', text: command }, ...output.map((text) => ({ kind: 'out' as const, text }))])
+      setLines((prev) => [...prev, { kind: 'in', text: command }, ...output.map((text) => ({ kind: error ? ('err' as const) : ('out' as const), text }))])
     }
 
     if (action?.type === 'theme') onToggleTheme()
+    if (action?.type === 'boring') {
+      onToggleBoring()
+      onClose()
+    }
     if (action?.type === 'open') window.open(action.url, '_blank', 'noopener')
     if (action?.type === 'scroll') {
       document.getElementById(action.id)?.scrollIntoView({ behavior: 'smooth' })
@@ -91,7 +104,7 @@ export function Terminal({ open, onClose, onToggleTheme }: TerminalProps) {
 
       <div ref={logRef} role="log" aria-live="polite" className="flex-1 overflow-y-auto px-4 py-3 text-[13px] leading-relaxed">
         {lines.map((line, i) => (
-          <div key={i} className={line.kind === 'in' ? 'text-accent' : 'whitespace-pre-wrap text-ink'}>
+          <div key={i} className={LINE_CLASS[line.kind]}>
             {line.kind === 'in' ? `❯ ${line.text}` : line.text}
           </div>
         ))}

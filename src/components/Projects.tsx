@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { CATEGORY_LABELS, projects, type Category } from '../data/projects'
+import { withViewTransition } from '../lib/viewTransition'
 import { ProjectCard } from './ProjectCard'
 import { Reveal } from './Reveal'
 import { SectionHeading } from './SectionHeading'
@@ -18,6 +19,13 @@ export function Projects() {
 
   const visible = active === 'all' ? projects : projects.filter((p) => p.categories.includes(active))
 
+  // In boring mode the filters are a segmented control, and a view transition
+  // lets the selected thumb slide to its new segment. Fun mode stays snappy.
+  function choose(filter: Filter) {
+    if (document.documentElement.dataset.mode === 'boring') withViewTransition(() => setActive(filter))
+    else setActive(filter)
+  }
+
   return (
     <section id="projects" aria-labelledby="projects-title" className="scroll-mt-20 py-24">
       <div className="mx-auto max-w-6xl px-5">
@@ -28,12 +36,14 @@ export function Projects() {
           sub="Filter by what kind of thing it is. Each card links to the code where it is public."
         />
 
-        <div className="mb-8 flex flex-wrap items-center gap-2" role="group" aria-label="Filter projects by category">
-          {filters.map((f) => (
-            <button key={f} type="button" className="filter" aria-pressed={active === f} onClick={() => setActive(f)}>
-              {f === 'all' ? 'All' : CATEGORY_LABELS[f]}
-            </button>
-          ))}
+        <div className="mb-8 flex flex-wrap items-center gap-3">
+          <div className="filters flex flex-wrap gap-2" role="group" aria-label="Filter projects by category">
+            {filters.map((f) => (
+              <button key={f} type="button" className="filter" aria-pressed={active === f} onClick={() => choose(f)}>
+                {f === 'all' ? 'All' : CATEGORY_LABELS[f]}
+              </button>
+            ))}
+          </div>
           <span className="ml-auto text-xs text-muted" aria-live="polite">
             {visible.length} / {projects.length}
           </span>

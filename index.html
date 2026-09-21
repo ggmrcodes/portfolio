@@ -25,7 +25,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,500;0,600;1,400&family=Press+Start+2P&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Martian+Mono:wdth,wght@75..112.5,100..800&family=Press+Start+2P&display=swap"
       rel="stylesheet"
     />
 
@@ -38,6 +38,18 @@
           saved = matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
         }
         document.documentElement.dataset.theme = saved
+        // Same for "I'm boring" mode (see hooks/useBoring.ts)
+        document.documentElement.dataset.mode = localStorage.getItem('mode') === 'boring' ? 'boring' : 'fun'
+        if (document.documentElement.dataset.mode === 'boring') {
+          // Boring mode's typeface, requested early so text does not swap fonts after paint
+          var font = document.createElement('link')
+          font.rel = 'preload'
+          font.as = 'font'
+          font.type = 'font/woff2'
+          font.crossOrigin = 'anonymous'
+          font.href = '/fonts/MartianGrotesk-VF.woff2'
+          document.head.appendChild(font)
+        }
       } catch (e) {
         document.documentElement.dataset.theme = 'dark'
       }

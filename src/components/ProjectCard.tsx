@@ -14,6 +14,7 @@ const toneVar = {
   accent: 'var(--accent)',
   cyan: 'var(--cyan)',
   amber: 'var(--amber)',
+  violet: 'var(--violet)',
 }
 
 export function ProjectCard({ project, index }: ProjectCardProps) {

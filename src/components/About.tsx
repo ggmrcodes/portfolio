@@ -6,7 +6,7 @@ import { SectionHeading } from './SectionHeading'
 const facts: [string, string][] = [
   ['school', profile.school],
   ['location', profile.location],
-  ['languages', profile.languages.join(', ')],
+  ['languages', profile.languages.map((l) => l.name).join(', ')],
   ['focus', 'assistive tech, clinical tools, ML'],
 ]
 
@@ -22,7 +22,7 @@ export function About() {
               <div className="space-y-5 p-6 md:p-8">
                 {profile.bio.map((paragraph, i) => (
                   <p key={i} className="leading-relaxed">
-                    <span className="mr-3 font-pixel text-[9px] text-accent" aria-hidden="true">
+                    <span data-fun className="mr-3 font-pixel text-[9px] text-accent" aria-hidden="true">
                       [{String(i + 1).padStart(2, '0')}]
                     </span>
                     {paragraph}

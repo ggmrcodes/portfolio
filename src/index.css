@@ -235,6 +235,36 @@ body::before {
   transform: translateY(50%);
 }
 
+/* The mark puts itself up once on load: the silhouette rises in four jumps,
+   the way floors go up, and the window comes on when it tops out. Four steps
+   rather than a smooth wipe, because a smooth one reads as a reveal and a
+   stepped one reads as construction. Retro only, since boring mode's chrome
+   does not move, and it runs once: nothing on this site loops. */
+@media (prefers-reduced-motion: no-preference) {
+  [data-mode='fun'] .mark svg {
+    animation: raise 720ms steps(4, jump-none) both;
+  }
+  [data-mode='fun'] .mark svg rect {
+    animation: lights-on 260ms 760ms both;
+  }
+}
+@keyframes raise {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes lights-on {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .window-bar {
   display: flex;
   align-items: center;

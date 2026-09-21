@@ -235,6 +235,36 @@ body::before {
   transform: translateY(50%);
 }
 
+/* The mark puts itself up once on load: the silhouette rises in four jumps,
+   the way floors go up, and the window comes on when it tops out. Four steps
+   rather than a smooth wipe, because a smooth one reads as a reveal and a
+   stepped one reads as construction. Retro only, since boring mode's chrome
+   does not move, and it runs once: nothing on this site loops. */
+@media (prefers-reduced-motion: no-preference) {
+  [data-mode='fun'] .mark svg {
+    animation: raise 720ms steps(4, jump-none) both;
+  }
+  [data-mode='fun'] .mark svg rect {
+    animation: lights-on 260ms 760ms both;
+  }
+}
+@keyframes raise {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+@keyframes lights-on {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
 .window-bar {
   display: flex;
   align-items: center;
@@ -420,6 +450,10 @@ body::before {
   font-display: swap;
 }
 [data-mode='boring'] {
+  /* Anything factual is set in a monospace: dates, years, counters, codes.
+     It is the platform's own, not a webfont, which is what GitHub does and
+     what keeps this mode's only download the one grotesque. */
+  --meta: ui-monospace, SFMono-Regular, 'SF Mono', Menlo, Consolas, 'Liberation Mono', monospace;
   /* The radius scale. Every rounded corner in this mode comes from here. */
   --radius-xs: 2px;
   --radius-sm: 6px;
@@ -788,6 +822,26 @@ body::before {
 [data-mode='boring'] .nickname {
   font-weight: 620;
   letter-spacing: -0.03em;
+}
+
+/* ---- Metadata. Dates, years and counters are facts, so they are set apart
+   from the prose by a monospace rather than by colour or weight. Tabular
+   figures keep a column of years in line with each other. ---- */
+[data-mode='boring'] .meta,
+[data-mode='boring'] .deck-count,
+[data-mode='boring'] .deck-streak-tile {
+  font-family: var(--meta);
+  font-variant-numeric: tabular-nums;
+  font-stretch: normal;
+  letter-spacing: 0;
+}
+[data-mode='boring'] .meta {
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+[data-mode='boring'] .deck-streak-tile {
+  font-size: 0.6875rem;
+  font-weight: 600;
 }
 
 /* ---- Moderate motion: section titles rise out of a mask the first time

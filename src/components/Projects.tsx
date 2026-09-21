@@ -44,7 +44,7 @@ export function Projects() {
               </button>
             ))}
           </div>
-          <span className="ml-auto text-xs text-muted" aria-live="polite">
+          <span className="meta ml-auto text-xs text-muted" aria-live="polite">
             {visible.length} / {projects.length}
           </span>
         </div>

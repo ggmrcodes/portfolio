@@ -8,8 +8,10 @@ function RoleRow({ role }: { role: Role }) {
   return (
     <li className="border-b border-line py-4 last:border-0">
       <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <h4 className="font-semibold">{role.title}</h4>
-        {role.period && <span className="font-pixel text-[8px] text-muted">{role.period}</span>}
+        <h4 className="min-w-0 flex-1 font-semibold">{role.title}</h4>
+        {role.period && (
+          <span className="meta shrink-0 whitespace-nowrap font-pixel text-[8px] text-muted">{role.period}</span>
+        )}
       </div>
       <p className="text-sm text-muted">{role.org}</p>
       {role.bullets && role.bullets.length > 0 && (
@@ -58,11 +60,13 @@ export function Experience() {
                   <ul>
                     {awards.map((a) => (
                       <li key={a.title} className="flex flex-wrap items-baseline justify-between gap-x-4 border-b border-line py-3 last:border-0">
-                        <div>
+                        <div className="min-w-0 flex-1">
                           <p className="font-semibold">{a.title}</p>
                           {a.detail && <p className="text-sm text-muted">{a.detail}</p>}
                         </div>
-                        {a.year && <span className="font-pixel text-[8px] text-muted">{a.year}</span>}
+                        {a.year && (
+                          <span className="meta shrink-0 whitespace-nowrap font-pixel text-[8px] text-muted">{a.year}</span>
+                        )}
                       </li>
                     ))}
                   </ul>

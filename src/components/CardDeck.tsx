@@ -319,8 +319,24 @@ export default function CardDeck() {
               onPointerCancel={(e) => engine.pointerUp(e, true)}
             >
               <span className="deck-label">{card.label}</span>
-              <span className="deck-headline">{card.headline}</span>
-              <span className="deck-detail">{card.detail}</span>
+              {card.spotify ? (
+                // The player carries the title and art itself, so the headline and
+                // detail are left to the live region below rather than repeated here.
+                // Pressing the player does not drag the card, which is what you want.
+                <span className="deck-player">
+                  <iframe
+                    src={`https://open.spotify.com/embed/track/${card.spotify}`}
+                    title={`${card.headline} on Spotify`}
+                    loading="lazy"
+                    allow="clipboard-write; encrypted-media; picture-in-picture"
+                  />
+                </span>
+              ) : (
+                <>
+                  <span className="deck-headline">{card.headline}</span>
+                  <span className="deck-detail">{card.detail}</span>
+                </>
+              )}
               {card.streak && (
                 // Decorative: the headline right above already lists these languages,
                 // so repeating the codes to a screen reader would only add noise.

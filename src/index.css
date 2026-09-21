@@ -987,6 +987,20 @@ body::before {
   letter-spacing: 0.02em; /* small caps-height text needs a little air */
   line-height: 1.5;
 }
+/* The one embedded player. It sits where the headline and detail would be,
+   and keeps the card's own corner radius rather than the provider's. */
+.deck-player {
+  margin-top: auto;
+  display: block;
+}
+.deck-player iframe {
+  display: block;
+  width: 100%;
+  height: 80px;
+  border: 0;
+  border-radius: var(--radius-sm);
+}
+
 .deck-controls {
   display: flex;
   align-items: center;

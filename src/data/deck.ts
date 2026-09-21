@@ -43,7 +43,7 @@ export const deck: DeckCard[] = [
     tone: 'amber',
   },
   { label: 'Off the keyboard', headline: 'Wheelchair fencing', detail: 'Sabre.', tone: 'accent' },
-  { label: 'Listening', headline: 'House', detail: 'Around 124 BPM.', tone: 'cyan' },
+  { label: 'What I’m listening to', headline: 'Wacuka', detail: 'Afro house.', tone: 'cyan' },
   {
     label: 'Speaks',
     headline: profile.languages.map((l) => l.name).join(', '),

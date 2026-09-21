@@ -21,8 +21,8 @@ export interface Project {
   summary: string
   highlights: string[]
   stack: string[]
-  /** Which accent colour the card uses */
-  tone: 'accent' | 'cyan' | 'amber'
+  /** Which signal colour marks this project. Education uses violet; nothing else does. */
+  tone: 'accent' | 'cyan' | 'amber' | 'violet'
   repo?: string
   demo?: string
   /** Optional screenshot path under /public, e.g. '/projects/haemocare.png' */
@@ -79,35 +79,6 @@ export const projects: Project[] = [
     repo: 'https://github.com/ggmrcodes/anthroheight-BARTLAB',
   },
   {
-    slug: 'cp-tracker',
-    title: 'CP Daily Tracking',
-    year: '2026',
-    categories: ['mobile'],
-    tone: 'accent',
-    summary:
-      'SwiftUI app for logging daily exercise and activity alongside spasticity and fatigue levels, so patterns across days are easy to spot.',
-    highlights: [
-      'Built for real daily use, which forced a two-tap logging flow and nothing that needs a keyboard.',
-    ],
-    stack: ['Swift', 'SwiftUI'],
-    repo: 'https://github.com/ggmrcodes/CP_Daily_Tracking',
-  },
-  {
-    slug: 'pm-dashboard',
-    title: 'PM Sensor Dashboard',
-    year: '2025',
-    categories: ['web'],
-    tone: 'cyan',
-    summary:
-      'Flask service that receives readings from air-quality sensors (PM2.5, PM10, temperature, humidity, noise) over HTTP and renders a live dashboard mapped by site.',
-    highlights: [
-      'Accepts JSON or form-encoded posts so cheap IoT boards can report without a client library.',
-      'Keeps a rolling window of recent readings in memory and serves a map plus per-site charts.',
-    ],
-    stack: ['Python', 'Flask'],
-    repo: 'https://github.com/ggmrcodes/pm_webapp',
-  },
-  {
     slug: 'fpl-ai',
     title: 'Fantasy Premier League AI',
     year: '2024',
@@ -140,7 +111,7 @@ export const projects: Project[] = [
     title: 'Algorithmic Thinking Textbook',
     year: '2024',
     categories: ['education'],
-    tone: 'cyan',
+    tone: 'violet',
     summary:
       'A textbook that teaches algorithmic thinking to primary and middle school students, written in Thai for the Thai curriculum.',
     highlights: ['Written and lectured with NSTDA, Thailand’s National Science and Technology Development Agency.'],

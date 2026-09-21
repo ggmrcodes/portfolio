@@ -12,12 +12,16 @@ import { awards, work } from '../data/experience'
 export type TerminalAction =
   | { type: 'clear' }
   | { type: 'theme' }
+  | { type: 'boring' }
   | { type: 'open'; url: string }
   | { type: 'scroll'; id: string }
 
 export interface TerminalResult {
   lines: string[]
   action?: TerminalAction
+  /** The command failed. The component prints these lines in the error colour.
+   *  The lines still say what went wrong in words, so colour is never the only signal. */
+  error?: boolean
 }
 
 const HELP: [string, string][] = [
@@ -30,6 +34,7 @@ const HELP: [string, string][] = [
   ['contact', 'email, GitHub, LinkedIn'],
   ['goto <section>', 'scroll to about | projects | experience | contact'],
   ['theme', 'toggle dark / light'],
+  ['boring', 'turn off the retro game styling'],
   ['clear', 'clear the screen'],
 ]
 
@@ -64,12 +69,12 @@ export function runCommand(raw: string): TerminalResult {
     case 'open': {
       const slug = args[0]?.toLowerCase()
       if (!slug) {
-        return { lines: ['usage: open <slug>', `slugs: ${projects.map((p) => p.slug).join(', ')}`] }
+        return { lines: ['usage: open <slug>', `slugs: ${projects.map((p) => p.slug).join(', ')}`], error: true }
       }
       const project = projects.find((p) => p.slug === slug)
-      if (!project) return { lines: [`open: no project named "${slug}". Try "projects".`] }
+      if (!project) return { lines: [`open: no project named "${slug}". Try "projects".`], error: true }
       const url = project.repo ?? project.demo
-      if (!url) return { lines: [`${project.title} has no public link yet.`] }
+      if (!url) return { lines: [`${project.title} has no public link yet.`], error: true }
       return { lines: [`opening ${url}`], action: { type: 'open', url } }
     }
 
@@ -92,12 +97,15 @@ export function runCommand(raw: string): TerminalResult {
 
     case 'goto': {
       const id = args[0]?.toLowerCase()
-      if (!id || !SECTIONS.includes(id)) return { lines: [`usage: goto <${SECTIONS.join(' | ')}>`] }
+      if (!id || !SECTIONS.includes(id)) return { lines: [`usage: goto <${SECTIONS.join(' | ')}>`], error: true }
       return { lines: [`jumping to #${id}`], action: { type: 'scroll', id } }
     }
 
     case 'theme':
       return { lines: ['toggling theme'], action: { type: 'theme' } }
+
+    case 'boring':
+      return { lines: ['fine. going boring.'], action: { type: 'boring' } }
 
     case 'clear':
       return { lines: [], action: { type: 'clear' } }
@@ -106,6 +114,6 @@ export function runCommand(raw: string): TerminalResult {
       return { lines: ['sudo: permission denied. Nice try though.'] }
 
     default:
-      return { lines: [`command not found: ${cmd}. Type "help".`] }
+      return { lines: [`command not found: ${cmd}. Type "help".`], error: true }
   }
 }

@@ -14,22 +14,31 @@
   --accent: #34d399;
   --cyan: #22d3ee;
   --amber: #fb923c;
+  --violet: #a78bfa;
+  --error: #f87171;
   --on-accent: #06130d;
   --scanline: 0.32;
+  --avatar-outline: rgba(3, 6, 14, 0.95);
   color-scheme: dark;
 }
 
 [data-theme='light'] {
-  --base: #f4efe3;
-  --panel: #fffdf6;
+  --base: #ffffff;
+  --panel: #ffffff;
   --ink: #10182b;
   --muted: #56637a;
-  --line: #d6cdb8;
-  --accent: #0f9d6e;
-  --cyan: #0e8fa8;
-  --amber: #df5f16;
+  --line: #d3d8e2; /* a cool grey, so the rules read as ink at low opacity and not as paper */
+  /* Text-safe steps. These also pass as fills under white text, so this palette
+     needs one value per hue rather than a separate solid and text token. */
+  --accent: #0a7852; /* 5.50:1 on white */
+  --cyan: #0c7d93; /* 4.81:1 */
+  --amber: #b84c0d; /* 5.15:1 */
+  /* Light grounds need a darker step to clear 4.5:1 as text. */
+  --violet: #6d28d9;
+  --error: #b91c1c;
   --on-accent: #ffffff;
   --scanline: 0.1;
+  --avatar-outline: #10182b;
   color-scheme: light;
 }
 
@@ -45,9 +54,17 @@
   --color-accent: var(--accent);
   --color-cyan: var(--cyan);
   --color-amber: var(--amber);
+  --color-violet: var(--violet);
+  --color-error: var(--error);
   --color-on-accent: var(--on-accent);
-  --font-pixel: 'Press Start 2P', ui-monospace, monospace;
-  --font-mono: 'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* Fonts go through runtime variables too, so boring mode can swap them */
+  --font-pixel: var(--pixel);
+  --font-mono: var(--mono);
+}
+
+:root {
+  --pixel: 'Press Start 2P', ui-monospace, monospace;
+  --mono: 'Martian Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 }
 
 /* ------------------------------------------------------------------
@@ -60,9 +77,13 @@ html {
 body {
   background: var(--base);
   color: var(--ink);
-  font-family: var(--font-mono);
-  font-size: 15px;
-  line-height: 1.65;
+  font-family: var(--mono);
+  /* Martian Mono is a variable font with a tall x-height: run it a little
+     smaller, lighter and narrower than its defaults so body text stays airy */
+  font-size: 13.5px;
+  font-weight: 350;
+  font-stretch: 85%;
+  line-height: 1.8;
   -webkit-font-smoothing: antialiased;
   min-height: 100svh;
 }
@@ -100,7 +121,7 @@ body::before {
   padding: 10px 14px;
   background: var(--accent);
   color: var(--on-accent);
-  font-family: var(--font-pixel);
+  font-family: var(--pixel);
   font-size: 10px;
 }
 .skip-link:focus {
@@ -136,7 +157,7 @@ body::before {
   border: 2px solid var(--ink);
   background: var(--panel);
   color: var(--ink);
-  font-family: var(--font-pixel);
+  font-family: var(--pixel);
   font-size: 10px;
   line-height: 1;
   text-transform: uppercase;
@@ -162,8 +183,8 @@ body::before {
   display: inline-block;
   padding: 2px 8px;
   border: 1.5px solid var(--line);
-  font-size: 12px;
-  line-height: 1.6;
+  font-size: 11px;
+  line-height: 1.7;
   color: var(--muted);
   white-space: nowrap;
 }
@@ -173,7 +194,7 @@ body::before {
   border: 2px solid var(--line);
   background: transparent;
   color: var(--muted);
-  font-family: var(--font-pixel);
+  font-family: var(--pixel);
   font-size: 9px;
   text-transform: uppercase;
   cursor: pointer;
@@ -189,13 +210,38 @@ body::before {
   box-shadow: 3px 3px 0 0 var(--ink);
 }
 
+/* The nav link for the section you are currently reading (hooks/useActiveSection.ts
+   sets aria-current). Retro mode marks it with a hard accent block underneath,
+   drawn the same way as the rest of the chrome: square, no blur. */
+.nav-link {
+  position: relative;
+}
+.nav-link[aria-current]::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 -7px 0;
+  height: 3px;
+  background: var(--accent);
+}
+.nav-link[aria-current] {
+  color: var(--accent);
+}
+/* In the mobile sheet the links are full-width rows, so the block sits beside
+   the label instead of running the whole width of the screen. */
+#mobile-menu .nav-link[aria-current]::after {
+  inset: auto auto 50% 8px;
+  width: 3px;
+  height: 14px;
+  transform: translateY(50%);
+}
+
 .window-bar {
   display: flex;
   align-items: center;
   gap: 6px;
   padding: 8px 12px;
   border-bottom: 2px solid var(--ink);
-  font-family: var(--font-pixel);
+  font-family: var(--pixel);
   font-size: 9px;
   color: var(--muted);
   text-transform: lowercase;
@@ -235,8 +281,8 @@ body::before {
 }
 
 /* Sparse pixel "starfield" behind the hero, like an 8-bit night sky. A 96px
-   SVG tile of scattered 2-3px squares, faded out toward the edges. Lives on
-   a pseudo-element so the mask only fades the stars, never the content. */
+   SVG tile of scattered 2-3px squares. Hard-edged like everything else in
+   this mode: no fade, no gradient. Lives on a pseudo-element behind the content. */
 .pixel-field::before {
   content: '';
   position: absolute;
@@ -245,11 +291,12 @@ body::before {
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' shape-rendering='crispEdges' fill='%23324361'%3E%3Crect x='8' y='12' width='2' height='2'/%3E%3Crect x='40' y='4' width='3' height='3'/%3E%3Crect x='72' y='28' width='2' height='2'/%3E%3Crect x='20' y='52' width='2' height='2'/%3E%3Crect x='60' y='68' width='3' height='3'/%3E%3Crect x='88' y='84' width='2' height='2'/%3E%3Crect x='4' y='80' width='2' height='2'/%3E%3Crect x='48' y='40' width='2' height='2'/%3E%3Crect x='30' y='90' width='2' height='2'/%3E%3Crect x='80' y='56' width='2' height='2'/%3E%3C/svg%3E");
   background-size: 96px 96px;
-  mask-image: radial-gradient(ellipse 75% 75% at 50% 40%, #000 20%, transparent 78%);
 }
 
+/* Cool grey stars on the light theme. A warm tint here is what made the page
+   read as paper rather than white. */
 [data-theme='light'] .pixel-field::before {
-  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' shape-rendering='crispEdges' fill='%23c4b99f'%3E%3Crect x='8' y='12' width='2' height='2'/%3E%3Crect x='40' y='4' width='3' height='3'/%3E%3Crect x='72' y='28' width='2' height='2'/%3E%3Crect x='20' y='52' width='2' height='2'/%3E%3Crect x='60' y='68' width='3' height='3'/%3E%3Crect x='88' y='84' width='2' height='2'/%3E%3Crect x='4' y='80' width='2' height='2'/%3E%3Crect x='48' y='40' width='2' height='2'/%3E%3Crect x='30' y='90' width='2' height='2'/%3E%3Crect x='80' y='56' width='2' height='2'/%3E%3C/svg%3E");
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' shape-rendering='crispEdges' fill='%23c9d0dc'%3E%3Crect x='8' y='12' width='2' height='2'/%3E%3Crect x='40' y='4' width='3' height='3'/%3E%3Crect x='72' y='28' width='2' height='2'/%3E%3Crect x='20' y='52' width='2' height='2'/%3E%3Crect x='60' y='68' width='3' height='3'/%3E%3Crect x='88' y='84' width='2' height='2'/%3E%3Crect x='4' y='80' width='2' height='2'/%3E%3Crect x='48' y='40' width='2' height='2'/%3E%3Crect x='30' y='90' width='2' height='2'/%3E%3Crect x='80' y='56' width='2' height='2'/%3E%3C/svg%3E");
 }
 
 /* Blinking block cursor */
@@ -348,5 +395,620 @@ body::before {
   to {
     opacity: 1;
     transform: none;
+  }
+}
+
+/* ------------------------------------------------------------------
+   Boring mode: <html data-mode="boring"> (see hooks/useBoring.ts).
+   The same content with the game layer removed: one quiet typeface with
+   size-specific tracking and leading, neutral flat surfaces (no gradients),
+   a translucent nav that content scrolls under, soft depth instead of hard
+   offsets, and controls that answer on press.
+   Anything marked data-fun is hidden.
+   ------------------------------------------------------------------ */
+
+/* Martian Grotesk (Evil Martians, SIL Open Font License, see public/fonts):
+   the sans sibling of the Martian Mono that fun mode is set in, so the two
+   modes are one family. It is a variable font with a weight and a width
+   axis, so one 116 KB file covers every style used below. Browsers only
+   fetch a font when some text needs it, so fun mode never downloads it. */
+@font-face {
+  font-family: 'Martian Grotesk';
+  src: url('/fonts/MartianGrotesk-VF.woff2') format('woff2');
+  font-weight: 100 1000;
+  font-stretch: 75% 200%;
+  font-display: swap;
+}
+[data-mode='boring'] {
+  /* The radius scale. Every rounded corner in this mode comes from here. */
+  --radius-xs: 2px;
+  --radius-sm: 6px;
+  --radius-md: 11px;
+  --radius-lg: 20px;
+  --radius-xl: 26px;
+  --radius-pill: 980px;
+  --grotesk: 'Martian Grotesk', -apple-system, BlinkMacSystemFont, system-ui, 'Segoe UI', Roboto, sans-serif;
+  --pixel: var(--grotesk);
+  --mono: var(--grotesk);
+}
+
+/* Neutral surfaces in place of the retro navy and paper. The accent stays. */
+[data-mode='boring'][data-theme='light'] {
+  --base: #fbfbfd;
+  --panel: #ffffff;
+  --ink: #1d1d1f;
+  --muted: #6e6e73;
+  --line: rgba(0, 0, 0, 0.1);
+  /* Clears 4.5:1 on the canvas AND on the zone, which the footer now sits on */
+  --accent: #0a7852;
+  --on-accent: #ffffff;
+  --fill: rgba(0, 0, 0, 0.05); /* quiet fill for chips, secondary buttons, the filter track */
+  --thumb: #ffffff;
+  --nav: rgba(251, 251, 253, 0.72);
+  --zone: #f2f2f5; /* one step below the canvas */
+  --depth: 0 1px 2px rgba(0, 0, 0, 0.04), 0 12px 32px rgba(0, 0, 0, 0.06);
+  --deck-depth: 0 1px 2px rgba(0, 0, 0, 0.05), 0 18px 44px rgba(0, 0, 0, 0.12);
+}
+[data-mode='boring'][data-theme='dark'] {
+  --base: #000000;
+  --panel: #161617;
+  --ink: #f5f5f7;
+  --muted: #86868b;
+  --line: rgba(255, 255, 255, 0.12);
+  --accent: #34d399;
+  --on-accent: #04140d;
+  --fill: rgba(255, 255, 255, 0.09);
+  --thumb: #3a3a3c;
+  --nav: rgba(22, 22, 23, 0.72);
+  --zone: #0b0b0c; /* one step ABOVE the canvas: on a dark ground, nearer the light reads as nearer */
+  --depth: inset 0 1px 0 rgba(255, 255, 255, 0.06); /* a lit top edge instead of a shadow */
+  --deck-depth: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 18px 44px rgba(0, 0, 0, 0.6);
+}
+
+[data-mode='boring'] [data-fun],
+[data-mode='boring'] body::before,
+[data-mode='boring'] .pixel-field::before,
+[data-mode='boring'] .window-bar,
+[data-mode='boring'] .pixel-cover,
+[data-mode='boring'] .pixel-frame::after,
+[data-mode='boring'] .cursor::after {
+  display: none !important;
+}
+
+/* ---- Type. Sizes in rem so they follow the reader's text-size setting.
+   Tracking is size-specific: tight on display sizes, near zero on body.
+   Leading runs the other way: tight on headings, open on body. ---- */
+[data-mode='boring'] body {
+  font-size: 1rem; /* the face has a tall x-height, so it reads a size larger than it is */
+  font-weight: 380;
+  font-stretch: 84%; /* body text runs on the narrow end of the width axis */
+  line-height: 1.55;
+  letter-spacing: -0.012em;
+  text-rendering: optimizeLegibility;
+}
+[data-mode='boring'] .text-sm {
+  letter-spacing: -0.008em;
+}
+[data-mode='boring'] .text-xs {
+  letter-spacing: 0;
+}
+[data-mode='boring'] .font-pixel {
+  text-transform: none;
+  letter-spacing: -0.01em;
+  font-weight: 560;
+}
+[data-mode='boring'] .font-pixel.text-\[8px\] {
+  font-size: 0.75rem;
+  letter-spacing: 0;
+  font-weight: 500;
+}
+[data-mode='boring'] .font-pixel.text-\[9px\] {
+  font-size: 0.8125rem;
+}
+[data-mode='boring'] .font-pixel.text-\[10px\] {
+  font-size: 0.875rem;
+}
+[data-mode='boring'] .font-pixel.text-\[11px\] {
+  font-size: 0.9375rem;
+}
+[data-mode='boring'] h1.font-pixel {
+  font-size: clamp(2.5rem, 6vw, 4.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.028em;
+  font-weight: 700;
+}
+[data-mode='boring'] h2.font-pixel {
+  font-size: clamp(1.75rem, 3.2vw, 2.5rem);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  font-weight: 700;
+}
+[data-mode='boring'] h3.font-pixel.text-sm {
+  font-size: 1.3125rem;
+  line-height: 1.2;
+  letter-spacing: -0.012em;
+}
+[data-mode='boring'] p.font-pixel {
+  font-size: clamp(1.5rem, 2.8vw, 2rem);
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+}
+[data-mode='boring'] dt.font-pixel {
+  text-transform: capitalize;
+  font-weight: 500;
+  color: var(--muted);
+}
+/* Hero: the lead sentence becomes an intro size, and the section stops claiming a full screen */
+[data-mode='boring'] #home {
+  min-height: 74svh;
+}
+[data-mode='boring'] #home p.max-w-2xl {
+  font-size: clamp(1.125rem, 1.5vw, 1.3125rem);
+  line-height: 1.45;
+  letter-spacing: -0.015em;
+  text-wrap: pretty; /* no single word left alone on the last line */
+}
+
+/* ---- Materials and depth ---- */
+/* Tonal zoning. Alternate sections sit on a surface one step off the canvas,
+   so the page reads as bands rather than one flat sheet. This is where the
+   depth comes from in this mode: no texture, no gradient, just two grounds.
+   The step inverts by theme, dipping on light and lifting on dark, because on
+   a dark ground the surface nearer the light is the one that comes forward. */
+[data-mode='boring'] #about,
+[data-mode='boring'] #experience,
+[data-mode='boring'] footer {
+  background: var(--zone);
+}
+/* Panels keep their contrast on both grounds: white cards gain separation on
+   the zone, and fall back to their shadow on the canvas. */
+/* Nav is a translucent layer: content scrolls under it, and the hairline
+   only appears once something actually has (no permanent hard divider). */
+[data-mode='boring'] header {
+  background: var(--nav);
+  -webkit-backdrop-filter: saturate(180%) blur(20px);
+  backdrop-filter: saturate(180%) blur(20px);
+  border-bottom-color: transparent;
+}
+[data-mode='boring'] header::after {
+  content: '';
+  position: absolute;
+  inset: auto 0 0 0;
+  height: 1px;
+  background: var(--line);
+}
+@supports (animation-timeline: scroll()) {
+  [data-mode='boring'] header::after {
+    opacity: 0;
+    animation: hairline linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 72px;
+  }
+}
+@keyframes hairline {
+  to {
+    opacity: 1;
+  }
+}
+
+/* Large surfaces read as thicker: hairline edge plus a soft, deep shadow */
+[data-mode='boring'] .pixel-frame {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--depth);
+  overflow: hidden;
+}
+
+/* ---- Controls. Feedback is on the press, and it is instant. ---- */
+[data-mode='boring'] .btn {
+  padding: 0.6875rem 1.3125rem;
+  border: 0;
+  border-radius: var(--radius-pill);
+  box-shadow: none;
+  background: var(--fill);
+  color: var(--ink);
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: -0.014em;
+  text-transform: none;
+  transition:
+    transform 100ms ease-out,
+    background-color 160ms ease,
+    filter 160ms ease;
+}
+[data-mode='boring'] .btn:hover {
+  transform: none;
+  box-shadow: none;
+  background: color-mix(in srgb, var(--ink) 10%, transparent);
+}
+[data-mode='boring'] .btn-primary,
+[data-mode='boring'] .btn-primary:hover {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+[data-mode='boring'] .btn-primary:hover {
+  filter: brightness(1.07);
+}
+[data-mode='boring'] .btn:active {
+  transform: scale(0.97);
+  box-shadow: none;
+}
+
+[data-mode='boring'] header button {
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--fill);
+  color: var(--ink);
+  transition:
+    transform 100ms ease-out,
+    background-color 160ms ease;
+}
+[data-mode='boring'] header button:hover {
+  background: color-mix(in srgb, var(--ink) 12%, transparent);
+}
+[data-mode='boring'] header button:active {
+  transform: scale(0.94);
+}
+/* The current section's link: full-contrast text against the muted others,
+   plus a soft bar. No accent colour, which this mode spends only on the
+   primary button. The bar belongs to whichever link is current, so it appears
+   and disappears rather than travelling; only the text colour eases. */
+[data-mode='boring'] .nav-link {
+  transition: color 200ms ease;
+}
+[data-mode='boring'] .nav-link[aria-current] {
+  color: var(--ink);
+}
+[data-mode='boring'] .nav-link[aria-current]::after {
+  inset: auto 0 -8px 0;
+  height: 2px;
+  border-radius: var(--radius-xs);
+  background: var(--ink);
+}
+[data-mode='boring'] #mobile-menu .nav-link[aria-current]::after {
+  width: 2px;
+  height: 16px;
+  border-radius: var(--radius-xs);
+}
+@media (prefers-reduced-motion: reduce) {
+  [data-mode='boring'] .nav-link {
+    transition: none;
+  }
+}
+
+/* The mark stands on its own here. The bordered box belongs to the retro
+   chrome, where every control is a box; without it the mark can run larger. */
+[data-mode='boring'] .mark {
+  border: 0;
+  color: var(--ink);
+}
+[data-mode='boring'] .mark svg {
+  height: 26px;
+}
+
+[data-mode='boring'] .chip {
+  padding: 0.1875rem 0.625rem;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: var(--fill);
+  font-size: 0.8125rem;
+  letter-spacing: -0.006em;
+}
+
+/* Project filters become a segmented control: a quiet track and a raised
+   thumb. The thumb carries a view-transition-name, so when the selection
+   changes inside a view transition it slides to the new segment. */
+[data-mode='boring'] .filters {
+  gap: 0;
+  padding: 2px;
+  border-radius: var(--radius-md);
+  background: var(--fill);
+}
+[data-mode='boring'] .filter {
+  padding: 0.375rem 0.875rem;
+  border: 0;
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--ink);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: -0.012em;
+  text-transform: none;
+  transition: transform 100ms ease-out;
+}
+[data-mode='boring'] .filter:active {
+  transform: scale(0.96);
+}
+/* A segmented control never wraps: on phones the segments share one full-width track */
+@media (max-width: 480px) {
+  [data-mode='boring'] .filters {
+    flex-wrap: nowrap;
+    width: 100%;
+  }
+  [data-mode='boring'] .filter {
+    flex: 1 1 auto;
+    padding-inline: 0.375rem;
+    font-size: 0.8125rem;
+    white-space: nowrap;
+  }
+}
+[data-mode='boring'] .filter[aria-pressed='true'] {
+  background: var(--thumb);
+  color: var(--ink);
+  box-shadow:
+    0 1px 3px rgba(0, 0, 0, 0.14),
+    0 0 0 0.5px rgba(0, 0, 0, 0.05);
+  view-transition-name: filter-thumb;
+}
+
+[data-mode='boring'] li > span[aria-hidden='true'] {
+  border-radius: var(--radius-pill); /* list bullets */
+}
+[data-mode='boring'] :focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  outline-offset: 2px;
+}
+
+/* ---- Headings. Same family as the body, set apart by width and weight
+   rather than by a second typeface: titles run at the font's normal width
+   and a medium weight, with tracking that tightens as the size grows. ---- */
+[data-mode='boring'] h1.font-pixel,
+[data-mode='boring'] h2.font-pixel,
+[data-mode='boring'] h3.font-pixel.text-sm,
+[data-mode='boring'] p.font-pixel:not(.text-\[8px\]),
+[data-mode='boring'] .deck-headline,
+[data-mode='boring'] .nickname {
+  font-stretch: 100%;
+}
+[data-mode='boring'] h1.font-pixel {
+  /* Sized so the fifteen-letter surname fits one line at every width */
+  font-size: clamp(1.875rem, 9.2vw, 4rem);
+  font-weight: 500;
+  line-height: 1.08;
+  letter-spacing: -0.045em;
+}
+@media (min-width: 1024px) {
+  [data-mode='boring'] h1.font-pixel {
+    font-size: clamp(3rem, 5.2vw, 4.125rem); /* the deck takes the right-hand column from here up */
+  }
+}
+[data-mode='boring'] h2.font-pixel {
+  font-weight: 520;
+  letter-spacing: -0.04em;
+}
+[data-mode='boring'] h3.font-pixel.text-sm {
+  font-size: 1.375rem;
+  font-weight: 540;
+  letter-spacing: -0.03em;
+}
+[data-mode='boring'] p.font-pixel:not(.text-\[8px\]) {
+  font-weight: 500;
+  letter-spacing: -0.04em;
+}
+[data-mode='boring'] .nickname {
+  font-weight: 620;
+  letter-spacing: -0.03em;
+}
+
+/* ---- Moderate motion: section titles rise out of a mask the first time
+   they scroll into view (SectionHeading.tsx adds .is-in). ---- */
+@media (prefers-reduced-motion: no-preference) {
+  [data-mode='boring'] .heading-mask {
+    overflow: hidden;
+    padding-block: 0.06em 0.16em; /* room for ascenders and descenders inside the mask */
+  }
+  [data-mode='boring'] .heading-mask > span {
+    display: inline-block;
+    transform: translateY(112%);
+    transition: transform 800ms cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+  [data-mode='boring'] .heading-mask.is-in > span {
+    transform: none;
+  }
+}
+
+/* Project cards answer the pointer with a flat change: the hairline edge
+   picks up the accent. No glow, no gradient. */
+@media (hover: hover) {
+  [data-mode='boring'] #projects .pixel-frame {
+    transition: border-color 200ms ease;
+  }
+  [data-mode='boring'] #projects .pixel-frame:hover {
+    border-color: color-mix(in srgb, var(--accent) 60%, var(--line));
+  }
+}
+
+/* ---- The card deck (components/CardDeck.tsx). It only exists in this mode.
+   The engine writes transform and opacity; everything else is here. ---- */
+.deck-wrap {
+  width: min(340px, 86vw);
+  margin-inline: auto;
+}
+.deck {
+  position: relative;
+  height: 250px;
+  border-radius: var(--radius-xl);
+  outline-offset: 10px;
+}
+.deck ul {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+.deck-card {
+  position: absolute;
+  inset: 0 0 auto 0;
+  display: flex;
+  flex-direction: column;
+  height: 200px;
+  padding: 1.375rem 1.5rem 1.5rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-xl);
+  background: var(--panel);
+  box-shadow: var(--deck-depth);
+  transform-origin: 50% 100%;
+  will-change: transform, opacity;
+  cursor: grab;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: pan-y; /* the page still scrolls vertically; sideways belongs to the card */
+}
+.deck-card:active {
+  cursor: grabbing;
+}
+/* Only the top two cards show their text. Deeper ones are tilted, and their
+   corners would otherwise let a few letters peek out from under the stack. */
+.deck-card > span {
+  transition: opacity 200ms ease;
+}
+.deck-card:not([data-depth='0'], [data-depth='1']) > span {
+  opacity: 0;
+}
+.deck-label {
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--accent);
+}
+.deck-card[data-tone='cyan'] .deck-label {
+  color: var(--cyan);
+}
+.deck-card[data-tone='amber'] .deck-label {
+  color: var(--amber);
+}
+.deck-headline {
+  margin-top: auto;
+  font-size: 1.5rem;
+  font-weight: 540;
+  line-height: 1.12;
+  letter-spacing: -0.035em;
+}
+.deck-detail {
+  margin-top: 0.5rem;
+  color: var(--muted);
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  letter-spacing: -0.012em;
+}
+
+/* A streak strip, borrowed from language apps: a flame and one lit tile per
+   language. Flat amber on an amber wash, no gradient and nothing that pulses. */
+.deck-streak {
+  display: flex;
+  align-items: center;
+  gap: 0.375rem;
+  margin-top: 0.875rem;
+  color: var(--amber);
+}
+.deck-streak svg {
+  flex: none;
+  fill: color-mix(in srgb, var(--amber) 22%, transparent);
+}
+.deck-streak-days {
+  margin-right: 0.125rem;
+  font-size: 0.875rem;
+  font-weight: 620;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+.deck-streak-tile {
+  padding: 0.125rem 0.4375rem;
+  border-radius: var(--radius-sm);
+  background: color-mix(in srgb, var(--amber) 16%, transparent);
+  font-size: 0.6875rem;
+  font-weight: 620;
+  letter-spacing: 0.02em; /* small caps-height text needs a little air */
+  line-height: 1.5;
+}
+.deck-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.5rem;
+  color: var(--muted);
+  font-size: 0.8125rem;
+}
+.deck-controls button {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border-radius: var(--radius-pill);
+  background: var(--fill);
+  color: var(--ink);
+  transition:
+    transform 100ms ease-out,
+    background-color 160ms ease;
+}
+.deck-controls button:hover {
+  background: color-mix(in srgb, var(--ink) 12%, transparent);
+}
+.deck-controls button:active {
+  transform: scale(0.92);
+}
+.deck-count {
+  min-width: 3.2em;
+  text-align: center;
+  font-variant-numeric: tabular-nums;
+}
+.deck-hint {
+  margin-left: auto;
+  transition: opacity 400ms ease;
+}
+.deck-hint[data-hidden='true'] {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: reduce) {
+  .deck-card {
+    transition: opacity 200ms ease; /* no flight: the next card simply fades to the front */
+  }
+}
+
+/* ---- People who ask for less transparency or more contrast get solid chrome ---- */
+@media (prefers-reduced-transparency: reduce) {
+  [data-mode='boring'] header {
+    background: var(--base);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+}
+@media (prefers-contrast: more) {
+  [data-mode='boring'] header {
+    background: var(--base);
+    -webkit-backdrop-filter: none;
+    backdrop-filter: none;
+  }
+  [data-mode='boring'] header::after {
+    opacity: 1;
+    animation: none;
+    background: var(--ink);
+  }
+  [data-mode='boring'] .pixel-frame,
+  .deck-card {
+    border-color: var(--ink);
+  }
+}
+
+/* ------------------------------------------------------------------
+   View transitions (see lib/viewTransition.ts). Switching mode or theme
+   cross-fades instead of cutting, and the filter thumb slides. No bounce:
+   nothing here was thrown, so nothing should overshoot.
+   ------------------------------------------------------------------ */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: 300ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+::view-transition-group(filter-thumb) {
+  animation-duration: 340ms;
+  animation-timing-function: cubic-bezier(0.2, 0.9, 0.3, 1);
+}
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation-duration: 120ms !important; /* a brief cross-fade, no travel */
   }
 }

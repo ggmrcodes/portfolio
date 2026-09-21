@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react'
+import { useLayoutEffect, useState } from 'react'
+import { withViewTransition } from '../lib/viewTransition'
 
 export type Theme = 'dark' | 'light'
 
@@ -16,7 +17,8 @@ function initialTheme(): Theme {
 export function useTheme() {
   const [theme, setTheme] = useState<Theme>(initialTheme)
 
-  useEffect(() => {
+  // Layout effect, so the attribute is already set when a view transition snapshots the page
+  useLayoutEffect(() => {
     document.documentElement.dataset.theme = theme
     try {
       localStorage.setItem('theme', theme)
@@ -25,7 +27,8 @@ export function useTheme() {
     }
   }, [theme])
 
-  const toggle = () => setTheme((t) => (t === 'dark' ? 'light' : 'dark'))
+  // Cross-fade between themes rather than flashing from dark to light
+  const toggle = () => withViewTransition(() => setTheme((t) => (t === 'dark' ? 'light' : 'dark')))
 
   return { theme, toggle }
 }

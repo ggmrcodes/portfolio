@@ -1,6 +1,6 @@
 import type { CSSProperties, ReactNode } from 'react'
 
-export type Tone = 'accent' | 'cyan' | 'amber'
+export type Tone = 'accent' | 'cyan' | 'amber' | 'violet'
 
 interface PixelFrameProps {
   children: ReactNode
@@ -14,6 +14,7 @@ const toneVar: Record<Tone, string> = {
   accent: 'var(--accent)',
   cyan: 'var(--cyan)',
   amber: 'var(--amber)',
+  violet: 'var(--violet)',
 }
 
 /**

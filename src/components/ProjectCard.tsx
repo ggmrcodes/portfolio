@@ -18,7 +18,7 @@ const toneVar = {
 }
 
 export function ProjectCard({ project, index }: ProjectCardProps) {
-  const { title, slug, year, summary, highlights, stack, categories, tone, repo, demo, image, featured } = project
+  const { title, slug, year, summary, highlights, stack, categories, tone, repo, demo, image, featured, unavailable } = project
 
   // A featured card spans the grid. When it also has a screenshot, the shot
   // sits beside the text rather than as a banner on top, and is shown whole
@@ -48,13 +48,13 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
 
   return (
     <PixelFrame title={`${slug}.app`} tone={tone} className="flex h-full flex-col">
-      <div className={split ? 'flex flex-1 flex-col md:flex-row' : 'contents'}>
-        <div className={split ? 'shrink-0 border-b-2 border-ink md:w-[300px] md:border-b-0 md:border-r-2' : ''}>
+      <div className={split ? 'split flex flex-1 flex-col md:flex-row' : 'contents'}>
+        <div className={split ? 'split-media shrink-0 border-b-2 border-ink md:w-[300px] md:border-b-0 md:border-r-2' : ''}>
           {media}
         </div>
 
-      <div className="flex flex-1 flex-col gap-4 p-5 md:p-6">
-        <p className="font-pixel text-[8px] uppercase" style={{ color: toneVar[tone] }}>
+      <div className={`entry flex flex-1 flex-col gap-4 p-5 md:p-6 ${featured ? 'measure' : ''}`}>
+        <p className="entry-rail font-pixel text-[8px] uppercase" style={{ color: toneVar[tone] }}>
           {categories.map((c) => CATEGORY_LABELS[c]).join(' / ')}
         </p>
 
@@ -70,13 +70,17 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
           ))}
         </ul>
 
-        <ul className="mt-auto flex flex-wrap gap-1.5 pt-2" aria-label="Tech stack">
+        <ul className="stack mt-auto flex flex-wrap gap-1.5 pt-2" aria-label="Tech stack">
           {stack.map((s) => (
             <li key={s} className="chip">
               {s}
             </li>
           ))}
         </ul>
+
+        {!repo && !demo && unavailable && (
+          <p className="meta pt-2 text-xs text-muted">{unavailable}</p>
+        )}
 
         {(repo || demo) && (
           <div className="flex flex-wrap gap-3 pt-2">

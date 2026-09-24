@@ -25,6 +25,9 @@ export interface Project {
   tone: 'accent' | 'cyan' | 'amber' | 'violet'
   repo?: string
   demo?: string
+  /** Why there is no link, shown where the buttons would be. Only for projects
+   *  that genuinely have no public code; never a substitute for adding a link. */
+  unavailable?: string
   /** Lead with this one: it gets a full-width card at the top of the gallery */
   featured?: boolean
   /** Optional screenshot path under /public, e.g. '/projects/haemocare.png' */
@@ -109,7 +112,7 @@ export const projects: Project[] = [
       'Cut document lookup and parsing time by 25%.',
     ],
     stack: ['React', 'Python', 'LangChain', 'BGE embeddings', 'llama.cpp'],
-    // Internal to MFEC, so no public link.
+    unavailable: 'Internal to MFEC, so the code is not public.',
   },
   {
     slug: 'textbook',
@@ -121,6 +124,6 @@ export const projects: Project[] = [
       'A textbook that teaches algorithmic thinking to primary and middle school students, written in Thai for the Thai curriculum.',
     highlights: ['Written and lectured with NSTDA, Thailand’s National Science and Technology Development Agency.'],
     stack: ['Curriculum design', 'Thai'],
-    // Not online, so no public link.
+    unavailable: 'A printed textbook, so there is no repository.',
   },
 ]

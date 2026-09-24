@@ -31,7 +31,7 @@
   /* Text-safe steps. These also pass as fills under white text, so this palette
      needs one value per hue rather than a separate solid and text token. */
   --accent: #0a7852; /* 5.50:1 on white */
-  --cyan: #0c7d93; /* 4.81:1 */
+  --cyan: #0b7487; /* 5.26:1 on the canvas, 4.87:1 on the zone */
   --amber: #b84c0d; /* 5.15:1 */
   /* Light grounds need a darker step to clear 4.5:1 as text. */
   --violet: #6d28d9;
@@ -310,6 +310,15 @@ body::before {
   opacity: 0.82;
 }
 
+/* A featured card is wide, but a line of prose should not be. 45 to 75
+   characters is where the eye keeps its place on the return sweep; these
+   cards measured 106 before the cap. The card keeps its width, the text
+   does not. */
+.measure > p,
+.measure > ul {
+  max-width: 68ch;
+}
+
 /* The panel a screenshot sits on, so a phone-shaped image has a ground
    instead of floating in the card. The tone tints it, faintly. */
 .shot {
@@ -548,7 +557,7 @@ body::before {
   font-weight: 500;
 }
 [data-mode='boring'] .font-pixel.text-\[9px\] {
-  font-size: 0.8125rem;
+  font-size: 0.875rem; /* was 13px, merged into the 14px small step */
 }
 [data-mode='boring'] .font-pixel.text-\[10px\] {
   font-size: 0.875rem;
@@ -736,7 +745,7 @@ body::before {
   border: 0;
   border-radius: var(--radius-pill);
   background: var(--fill);
-  font-size: 0.8125rem;
+  font-size: 0.75rem; /* the 12px micro step, where tags belong */
   letter-spacing: -0.006em;
 }
 
@@ -851,7 +860,7 @@ body::before {
   font-weight: 400;
 }
 [data-mode='boring'] .deck-streak-tile {
-  font-size: 0.6875rem;
+  font-size: 0.75rem; /* was 11px, merged into the 12px micro step */
   font-weight: 600;
 }
 
@@ -864,11 +873,19 @@ body::before {
   }
   [data-mode='boring'] .heading-mask > span {
     display: inline-block;
-    transform: translateY(112%);
-    transition: transform 800ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
+  /* The title is never hidden waiting to be revealed: it is simply there, and
+     rises into place if and when the observer says it has come into view. */
   [data-mode='boring'] .heading-mask.is-in > span {
-    transform: none;
+    animation: heading-rise 800ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  @keyframes heading-rise {
+    from {
+      transform: translateY(112%);
+    }
+    to {
+      transform: none;
+    }
   }
 }
 
@@ -881,6 +898,151 @@ body::before {
   [data-mode='boring'] #projects .pixel-frame:hover {
     border-color: color-mix(in srgb, var(--accent) 60%, var(--line));
   }
+}
+
+/* ------------------------------------------------------------------
+   No elevation. Boring mode stopped putting every block in a rounded box
+   and now sets them on the page, separated by hairlines and by a rail that
+   every section shares. Depth comes from alignment and space. The counts
+   before this: 13 bordered boxes, 50 pills, 22 bullet dots.
+   ------------------------------------------------------------------ */
+[data-mode='boring'] .pixel-frame {
+  background: none;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  overflow: visible;
+}
+
+/* One spine for the whole page: metadata left, content right. */
+[data-mode='boring'] .entry,
+[data-mode='boring'] #experience li,
+[data-mode='boring'] #about .skills-row {
+  --rail: 9.5rem;
+}
+
+/* Projects become ruled rows rather than a grid of cards */
+[data-mode='boring'] #projects > div > ul {
+  display: block;
+}
+[data-mode='boring'] #projects > div > ul > li {
+  border-top: 1px solid var(--line);
+}
+[data-mode='boring'] #projects > div > ul > li:last-child {
+  border-bottom: 1px solid var(--line);
+}
+[data-mode='boring'] .entry {
+  padding: var(--space-6) 0;
+  gap: 0;
+}
+@media (min-width: 768px) {
+  [data-mode='boring'] .entry {
+    display: grid;
+    grid-template-columns: var(--rail) minmax(0, 1fr);
+    column-gap: var(--space-6);
+    align-items: start;
+  }
+  [data-mode='boring'] .entry > * {
+    grid-column: 2;
+  }
+  [data-mode='boring'] .entry-rail {
+    grid-column: 1;
+    grid-row: 1 / span 20;
+    padding-top: 0.35rem;
+  }
+}
+[data-mode='boring'] .entry > * + * {
+  margin-top: 0.75rem;
+}
+[data-mode='boring'] .entry h3 {
+  margin-top: 0;
+}
+
+/* A screenshot belongs in the rail, so the featured entry keeps the same
+   spine as every other row instead of pushing its content sideways. */
+[data-mode='boring'] .shot {
+  background: none;
+  padding: 0;
+}
+[data-mode='boring'] .split-media {
+  border: 0;
+}
+@media (min-width: 768px) {
+  [data-mode='boring'] .split {
+    display: grid;
+    grid-template-columns: var(--rail, 9.5rem) minmax(0, 1fr);
+    column-gap: var(--space-6);
+    align-items: start;
+  }
+  [data-mode='boring'] .split-media {
+    grid-column: 1;
+    width: auto;
+    padding: var(--space-6) 0 0;
+  }
+  [data-mode='boring'] .split > .entry {
+    grid-column: 2;
+    display: block;
+  }
+  /* inside a split row the category sits above the title, since the rail is taken */
+  [data-mode='boring'] .split .entry-rail {
+    grid-column: auto;
+    grid-row: auto;
+    padding-top: 0;
+  }
+}
+
+/* Both lists of facts read as lines, not as rows of pills */
+[data-mode='boring'] #about dd .chip,
+[data-mode='boring'] .stack .chip {
+  padding: 0;
+  background: none;
+  border-radius: 0;
+  font-family: var(--meta);
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+[data-mode='boring'] #about dd .chip:not(:last-child)::after,
+[data-mode='boring'] .stack .chip:not(:last-child)::after {
+  content: '·';
+  margin: 0 0.5em;
+  opacity: 0.55;
+}
+[data-mode='boring'] #about dd ul {
+  gap: 0;
+}
+[data-mode='boring'] .stack {
+  gap: 0;
+  padding-top: 0;
+}
+[data-mode='boring'] .stack .chip {
+  padding: 0;
+  background: none;
+  border-radius: 0;
+  font-family: var(--meta);
+  font-size: 0.75rem;
+  color: var(--muted);
+}
+[data-mode='boring'] .stack .chip:not(:last-child)::after {
+  content: '·';
+  margin: 0 0.5em;
+  opacity: 0.55;
+}
+
+/* A repo is a path, not a button */
+[data-mode='boring'] .entry .btn {
+  padding: 0;
+  background: none;
+  border-radius: 0;
+  font-family: var(--meta);
+  font-size: 0.75rem;
+  color: var(--accent);
+  font-weight: 400;
+}
+[data-mode='boring'] .entry .btn svg {
+  display: none;
+}
+[data-mode='boring'] .entry .btn::after {
+  content: ' →';
 }
 
 /* ---- The card deck (components/CardDeck.tsx). It only exists in this mode.
@@ -932,7 +1094,7 @@ body::before {
   opacity: 0;
 }
 .deck-label {
-  font-size: 0.8125rem;
+  font-size: 0.875rem; /* the 14px small step */
   font-weight: 600;
   letter-spacing: 0;
   color: var(--accent);
@@ -945,7 +1107,7 @@ body::before {
 }
 .deck-headline {
   margin-top: auto;
-  font-size: 1.5rem;
+  font-size: 1.375rem; /* was 24px, merged into the 22px title step */
   font-weight: 540;
   line-height: 1.12;
   letter-spacing: -0.035em;
@@ -953,7 +1115,7 @@ body::before {
 .deck-detail {
   margin-top: 0.5rem;
   color: var(--muted);
-  font-size: 0.9375rem;
+  font-size: 1rem; /* was 15px, merged into the 16px body step */
   line-height: 1.4;
   letter-spacing: -0.012em;
 }
@@ -1007,7 +1169,7 @@ body::before {
   gap: 0.5rem;
   margin-top: 0.5rem;
   color: var(--muted);
-  font-size: 0.8125rem;
+  font-size: 0.75rem; /* the 12px micro step */
 }
 .deck-controls button {
   display: grid;

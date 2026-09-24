@@ -1,4 +1,4 @@
-# <img src="public/favicon.svg" width="26" align="center" alt=""> Hatayasit Aroonvanichporn · Portfolio
+# <img src="public/favicon.svg" width="26" alt=""> Hatayasit Aroonvanichporn · Portfolio
 
 My personal site, built from scratch in React and TypeScript.
 
@@ -25,7 +25,7 @@ My personal site, built from scratch in React and TypeScript.
 
 **React 19 · TypeScript · Vite 8 · Tailwind v4 · three.js** — four runtime dependencies, no animation library.
 
-## <img src="docs/icons/eye.svg" width="20" align="center" alt=""> Overview
+## <img src="docs/icons/eye.svg" width="20" alt=""> Overview
 
 - **Project gallery with category filters.** One `useState`. The visible list is derived from it on every render, and each project reaches `ProjectCard` through props.
 - **An in-page terminal.** <kbd>`</kbd> opens it. Eleven commands, arrow-key history, reading the same data files as the page.
@@ -52,7 +52,7 @@ clear            clear the screen
 
 </details>
 
-## <img src="docs/icons/terminal.svg" width="20" align="center" alt=""> How to run it
+## <img src="docs/icons/terminal.svg" width="20" alt=""> How to run it
 
 Node 22.12 or newer. Vite runs on 20.19+, but the test runner needs 22.12.
 
@@ -62,7 +62,7 @@ npm run dev      # http://localhost:5173
 npm test         # 8 unit tests over the spring maths
 ```
 
-## <img src="docs/icons/folder-tree.svg" width="20" align="center" alt=""> How it is put together
+## <img src="docs/icons/folder-tree.svg" width="20" alt=""> How it is put together
 
 ```
 src/
@@ -75,7 +75,7 @@ src/
 
 Every string on the page comes from `src/data/`; no component hard-codes text. Three of the four files in `lib/` import no React at all, which is what makes them straightforward to test.
 
-## <img src="docs/icons/hammer.svg" width="20" align="center" alt=""> My contribution
+## <img src="docs/icons/hammer.svg" width="20" alt=""> My contribution
 
 Everything here is mine. The old version came out of a website builder; this one is hand-written, so I can explain any line of it.
 
@@ -84,13 +84,13 @@ Everything here is mine. The old version came out of a website builder; this one
 - **`lib/poseStand.ts`** — the Silver Chariot model has no skeleton, so I pose its arms by rotating vertices about virtual shoulder and elbow joints.
 - **`components/Nav.tsx` + `public/favicon.svg`** — the mark, a building, because Building is what people call me. One path with an even-odd fill, so the windows are real holes.
 
-## <img src="docs/icons/lightbulb.svg" width="20" align="center" alt=""> What I learned
+## <img src="docs/icons/lightbulb.svg" width="20" alt=""> What I learned
 
 Keeping the terminal explainable was the hard part. My first version put everything in the component: a long `switch` on the command string, with `window.open` and theme toggles tangled into the `setState` calls. It worked, but I could not describe it in one breath.
 
 Splitting it fixed that. `runCommand()` in `src/lib/terminal.ts` takes the input and returns `{ lines, action? }`, where `action` is a plain object like `{ type: 'open', url }`. It touches neither React nor the DOM; the component keeps state, calls it, and carries out whatever comes back. Adding a command is now one `case` in a file that has never imported React.
 
-## <img src="docs/icons/book-open.svg" width="20" align="center" alt=""> References
+## <img src="docs/icons/book-open.svg" width="20" alt=""> References
 
 - Scaffolded from the [Vite](https://vite.dev) `react-ts` template.
 - The deck's spring maths comes from Apple's [Designing Fluid Interfaces](https://developer.apple.com/videos/play/wwdc2018/803/), WWDC 2018. The code is my own.

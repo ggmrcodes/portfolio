@@ -30,7 +30,13 @@
   --line: #d3d8e2; /* a cool grey, so the rules read as ink at low opacity and not as paper */
   /* Text-safe steps. These also pass as fills under white text, so this palette
      needs one value per hue rather than a separate solid and text token. */
-  --accent: #0a7852; /* 5.50:1 on white */
+  /* Ultramarine, not the green the dark theme uses. A dark theme is a screen
+     and its accent is phosphor, which is why green sings there. A light theme
+     is paper and its accent is ink, and a mid forest green on white reads
+     municipal rather than considered. Blue is what computing was printed in.
+     It is also the ink's own hue at full chroma, so the page reads as one
+     colour family, and it sits opposite the amber, with the cyan between. */
+  --accent: #2440C4; /* 8.06:1 on white, and as a fill under white text */
   --cyan: #0b7487; /* 5.26:1 on the canvas, 4.87:1 on the zone */
   --amber: #b84c0d; /* 5.15:1 */
   /* Light grounds need a darker step to clear 4.5:1 as text. */

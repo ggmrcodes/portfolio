@@ -5,11 +5,11 @@ My personal site, built from scratch in React and TypeScript.
 <h6 align="center">
   <a href="https://www.hatayasit.com">Live site</a>
   ·
-  <a href="#overview">What it does</a>
+  <a href="#-overview">What it does</a>
   ·
-  <a href="#how-to-run-it">Run it</a>
+  <a href="#-how-to-run-it">Run it</a>
   ·
-  <a href="#my-contribution">What I built</a>
+  <a href="#-my-contribution">What I built</a>
 </h6>
 
 <table>

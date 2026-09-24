@@ -48,20 +48,24 @@ export function About() {
 
         <Reveal delay={200} className="mt-8">
           <PixelFrame title="skills.md" tone="amber">
-            <div className="grid gap-6 p-6 sm:grid-cols-2 md:p-8 lg:grid-cols-5">
+            {/* Rows, not columns. Five narrow columns forced two-word items onto
+                two lines and left the group labels at five different heights. */}
+            <dl className="grid gap-5 p-6 md:p-8">
               {profile.skills.map((group) => (
-                <div key={group.group}>
-                  <h3 className="mb-3 font-pixel text-[9px] uppercase text-accent">{group.group}</h3>
-                  <ul className="flex flex-wrap gap-1.5">
-                    {group.items.map((item) => (
-                      <li key={item} className="chip">
-                        {item}
-                      </li>
-                    ))}
-                  </ul>
+                <div key={group.group} className="grid gap-2 sm:grid-cols-[9rem_1fr] sm:items-baseline sm:gap-5">
+                  <dt className="meta font-pixel text-[9px] uppercase text-accent">{group.group}</dt>
+                  <dd className="m-0">
+                    <ul className="flex flex-wrap gap-1.5">
+                      {group.items.map((item) => (
+                        <li key={item} className="chip">
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                  </dd>
                 </div>
               ))}
-            </div>
+            </dl>
           </PixelFrame>
         </Reveal>
       </div>

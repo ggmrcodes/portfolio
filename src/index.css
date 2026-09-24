@@ -310,6 +310,15 @@ body::before {
   opacity: 0.82;
 }
 
+/* A featured card is wide, but a line of prose should not be. 45 to 75
+   characters is where the eye keeps its place on the return sweep; these
+   cards measured 106 before the cap. The card keeps its width, the text
+   does not. */
+.measure > p,
+.measure > ul {
+  max-width: 68ch;
+}
+
 /* The panel a screenshot sits on, so a phone-shaped image has a ground
    instead of floating in the card. The tone tints it, faintly. */
 .shot {
@@ -548,7 +557,7 @@ body::before {
   font-weight: 500;
 }
 [data-mode='boring'] .font-pixel.text-\[9px\] {
-  font-size: 0.8125rem;
+  font-size: 0.875rem; /* was 13px, merged into the 14px small step */
 }
 [data-mode='boring'] .font-pixel.text-\[10px\] {
   font-size: 0.875rem;
@@ -736,7 +745,7 @@ body::before {
   border: 0;
   border-radius: var(--radius-pill);
   background: var(--fill);
-  font-size: 0.8125rem;
+  font-size: 0.75rem; /* the 12px micro step, where tags belong */
   letter-spacing: -0.006em;
 }
 
@@ -851,7 +860,7 @@ body::before {
   font-weight: 400;
 }
 [data-mode='boring'] .deck-streak-tile {
-  font-size: 0.6875rem;
+  font-size: 0.75rem; /* was 11px, merged into the 12px micro step */
   font-weight: 600;
 }
 
@@ -864,11 +873,19 @@ body::before {
   }
   [data-mode='boring'] .heading-mask > span {
     display: inline-block;
-    transform: translateY(112%);
-    transition: transform 800ms cubic-bezier(0.2, 0.8, 0.2, 1);
   }
+  /* The title is never hidden waiting to be revealed: it is simply there, and
+     rises into place if and when the observer says it has come into view. */
   [data-mode='boring'] .heading-mask.is-in > span {
-    transform: none;
+    animation: heading-rise 800ms cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+  @keyframes heading-rise {
+    from {
+      transform: translateY(112%);
+    }
+    to {
+      transform: none;
+    }
   }
 }
 
@@ -932,7 +949,7 @@ body::before {
   opacity: 0;
 }
 .deck-label {
-  font-size: 0.8125rem;
+  font-size: 0.875rem; /* the 14px small step */
   font-weight: 600;
   letter-spacing: 0;
   color: var(--accent);
@@ -945,7 +962,7 @@ body::before {
 }
 .deck-headline {
   margin-top: auto;
-  font-size: 1.5rem;
+  font-size: 1.375rem; /* was 24px, merged into the 22px title step */
   font-weight: 540;
   line-height: 1.12;
   letter-spacing: -0.035em;
@@ -953,7 +970,7 @@ body::before {
 .deck-detail {
   margin-top: 0.5rem;
   color: var(--muted);
-  font-size: 0.9375rem;
+  font-size: 1rem; /* was 15px, merged into the 16px body step */
   line-height: 1.4;
   letter-spacing: -0.012em;
 }
@@ -1007,7 +1024,7 @@ body::before {
   gap: 0.5rem;
   margin-top: 0.5rem;
   color: var(--muted);
-  font-size: 0.8125rem;
+  font-size: 0.75rem; /* the 12px micro step */
 }
 .deck-controls button {
   display: grid;

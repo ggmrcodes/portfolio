@@ -53,9 +53,14 @@ export function ProjectCard({ project, index }: ProjectCardProps) {
           {media}
         </div>
 
-      <div className={`entry flex flex-1 flex-col gap-4 p-5 md:p-6 ${featured ? 'measure' : ''}`}>
-        <p className="entry-rail font-pixel text-[8px] uppercase" style={{ color: toneVar[tone] }}>
+      <div className="entry measure flex flex-1 flex-col gap-4 p-5 md:p-6">
+        {/* The rail. Category and year are the two facts that identify a
+            project, and they sit where every other fact on the page sits. */}
+        <p className="entry-rail meta font-pixel text-[8px] uppercase" style={{ color: toneVar[tone] }}>
           {categories.map((c) => CATEGORY_LABELS[c]).join(' / ')}
+          <span data-boring className="meta mt-1 block text-[11px] normal-case text-muted">
+            {year}
+          </span>
         </p>
 
         <h3 className="font-pixel text-sm leading-relaxed">{title}</h3>

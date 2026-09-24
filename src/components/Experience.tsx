@@ -6,13 +6,11 @@ import { SectionHeading } from './SectionHeading'
 
 function RoleRow({ role }: { role: Role }) {
   return (
-    <li className="border-b border-line py-4 last:border-0">
-      <div className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
-        <h4 className="min-w-0 flex-1 font-semibold">{role.title}</h4>
-        {role.period && (
-          <span className="meta shrink-0 whitespace-nowrap font-pixel text-[8px] text-muted">{role.period}</span>
-        )}
-      </div>
+    <li className="rail-row border-b border-line py-4 last:border-0">
+      {role.period && (
+        <span className="rail-fact meta whitespace-nowrap font-pixel text-[8px] text-muted">{role.period}</span>
+      )}
+      <h4 className="font-semibold">{role.title}</h4>
       <p className="text-sm text-muted">{role.org}</p>
       {role.bullets && role.bullets.length > 0 && (
         <ul className="mt-2 space-y-1 text-sm">
@@ -30,7 +28,7 @@ function RoleRow({ role }: { role: Role }) {
 
 export function Experience() {
   return (
-    <section id="experience" aria-labelledby="experience-title" className="scroll-mt-20 py-24">
+    <section id="experience" aria-labelledby="experience-title" className="scroll-mt-20 py-24 dense">
       <div className="mx-auto max-w-6xl px-5">
         <SectionHeading id="experience" index="03" title="Experience" />
 
@@ -38,7 +36,7 @@ export function Experience() {
           <Reveal>
             <PixelFrame title="work.log">
               <div className="p-6 md:p-8">
-                <h3 className="mb-2 flex items-center gap-3 font-pixel text-[10px] uppercase text-accent">
+                <h3 className="meta mb-2 flex items-center gap-3 font-pixel text-[10px] uppercase text-accent">
                   <Briefcase size={14} /> Work
                 </h3>
                 <ul>
@@ -54,19 +52,17 @@ export function Experience() {
             <Reveal delay={120}>
               <PixelFrame title="awards.log" tone="amber">
                 <div className="p-6 md:p-8">
-                  <h3 className="mb-2 flex items-center gap-3 font-pixel text-[10px] uppercase text-amber">
+                  <h3 className="meta mb-2 flex items-center gap-3 font-pixel text-[10px] uppercase text-amber">
                     <Award size={14} /> Awards and certifications
                   </h3>
                   <ul>
                     {awards.map((a) => (
-                      <li key={a.title} className="flex flex-wrap items-baseline justify-between gap-x-4 border-b border-line py-3 last:border-0">
-                        <div className="min-w-0 flex-1">
-                          <p className="font-semibold">{a.title}</p>
-                          {a.detail && <p className="text-sm text-muted">{a.detail}</p>}
-                        </div>
+                      <li key={a.title} className="rail-row border-b border-line py-3 last:border-0">
                         {a.year && (
-                          <span className="meta shrink-0 whitespace-nowrap font-pixel text-[8px] text-muted">{a.year}</span>
+                          <span className="rail-fact meta whitespace-nowrap font-pixel text-[8px] text-muted">{a.year}</span>
                         )}
+                        <p className="font-semibold">{a.title}</p>
+                        {a.detail && <p className="text-sm text-muted">{a.detail}</p>}
                       </li>
                     ))}
                   </ul>
@@ -77,7 +73,7 @@ export function Experience() {
             <Reveal delay={200}>
               <PixelFrame title="leadership.log" tone="cyan">
                 <div className="p-6 md:p-8">
-                  <h3 className="mb-2 flex items-center gap-3 font-pixel text-[10px] uppercase text-cyan">
+                  <h3 className="meta mb-2 flex items-center gap-3 font-pixel text-[10px] uppercase text-cyan">
                     <Users size={14} /> Leadership and community
                   </h3>
                   <ul>

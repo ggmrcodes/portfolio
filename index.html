@@ -41,14 +41,18 @@
         // Same for "I'm boring" mode (see hooks/useBoring.ts)
         document.documentElement.dataset.mode = localStorage.getItem('mode') === 'boring' ? 'boring' : 'fun'
         if (document.documentElement.dataset.mode === 'boring') {
-          // Boring mode's typeface, requested early so text does not swap fonts after paint
-          var font = document.createElement('link')
-          font.rel = 'preload'
-          font.as = 'font'
-          font.type = 'font/woff2'
-          font.crossOrigin = 'anonymous'
-          font.href = '/fonts/MartianGrotesk-VF.woff2'
-          document.head.appendChild(font)
+          // Boring mode's typefaces, requested early so text does not swap
+          // fonts after paint: Manrope for everything and Inconsolata for the
+          // metadata rail. Fun mode asks for neither.
+          ;['/fonts/Manrope-VF-latin.woff2', '/fonts/Inconsolata-VF-latin.woff2'].forEach(function (href) {
+            var font = document.createElement('link')
+            font.rel = 'preload'
+            font.as = 'font'
+            font.type = 'font/woff2'
+            font.crossOrigin = 'anonymous'
+            font.href = href
+            document.head.appendChild(font)
+          })
         }
       } catch (e) {
         document.documentElement.dataset.theme = 'dark'

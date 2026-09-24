@@ -7,7 +7,7 @@ import { SectionHeading } from './SectionHeading'
 
 export function Contact() {
   return (
-    <section id="contact" aria-labelledby="contact-title" className="scroll-mt-20 py-24">
+    <section id="contact" aria-labelledby="contact-title" className="scroll-mt-20 py-24 open">
       <div className="mx-auto max-w-6xl px-5">
         <SectionHeading id="contact" index="04" title="Contact" sub="Email is the fastest way to reach me. I read everything." />
 

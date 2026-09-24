@@ -15,7 +15,7 @@ export function Contact() {
           <PixelFrame title="contact.sh">
             <div className="grid gap-8 p-6 md:grid-cols-[1fr_auto] md:items-center md:p-10">
               <div>
-                <p className="font-pixel text-[clamp(0.8rem,2.2vw,1.1rem)] uppercase leading-relaxed">
+                <p className="font-pixel text-[clamp(0.8rem,2.2vw,1.25rem)] uppercase leading-relaxed">
                   Let&apos;s build something
                   <br />
                   that actually helps someone.

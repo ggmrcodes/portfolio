@@ -22,13 +22,14 @@ const lastName = rest.join(' ')
 export function Hero({ boring, onOpenTerminal }: HeroProps) {
   return (
     <section id="home" className="pixel-field relative flex min-h-[92svh] items-center overflow-hidden pt-16">
-      {/* Floating pixels, decorative only. Hidden on phones where they collide with text. */}
+      {/* Scattered pixels, decorative only. They rise in once with the hero and
+          then stay put. Hidden on phones where they collide with text. */}
       <div aria-hidden="true" data-fun className="pointer-events-none absolute inset-0 hidden md:block">
-        <span className="float absolute left-[8%] top-[22%] size-3 bg-accent" style={{ '--d': '0s' } as CSSProperties} />
-        <span className="float absolute right-[12%] top-[30%] size-2 bg-cyan" style={{ '--d': '1.2s' } as CSSProperties} />
-        <span className="float absolute bottom-[26%] left-[18%] size-2 bg-amber" style={{ '--d': '2.1s' } as CSSProperties} />
-        <span className="float absolute bottom-[18%] right-[22%] size-4 border-2 border-line" style={{ '--d': '0.6s' } as CSSProperties} />
-        <span className="float absolute right-[30%] top-[14%] size-6 border-2 border-line" style={{ '--d': '1.8s' } as CSSProperties} />
+        <span className="float absolute left-[8%] top-[22%] size-3 bg-accent" style={{ '--d': '0.15s' } as CSSProperties} />
+        <span className="float absolute right-[12%] top-[30%] size-2 bg-cyan" style={{ '--d': '0.3s' } as CSSProperties} />
+        <span className="float absolute bottom-[26%] left-[18%] size-2 bg-amber" style={{ '--d': '0.45s' } as CSSProperties} />
+        <span className="float absolute bottom-[18%] right-[22%] size-4 border-2 border-line" style={{ '--d': '0.25s' } as CSSProperties} />
+        <span className="float absolute right-[30%] top-[14%] size-6 border-2 border-line" style={{ '--d': '0.4s' } as CSSProperties} />
       </div>
 
       {/* Voxel avatar, wide screens only. Not mounted in boring mode, so three.js never loads there */}

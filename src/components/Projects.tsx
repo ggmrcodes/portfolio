@@ -27,7 +27,7 @@ export function Projects() {
   }
 
   return (
-    <section id="projects" aria-labelledby="projects-title" className="scroll-mt-20 py-24">
+    <section id="projects" aria-labelledby="projects-title" className="scroll-mt-20 py-24 dense">
       <div className="mx-auto max-w-6xl px-5">
         <SectionHeading
           id="projects"
@@ -36,7 +36,7 @@ export function Projects() {
           sub="Filter by what kind of thing it is. Each card links to the code where it is public."
         />
 
-        <div className="mb-8 flex flex-wrap items-center gap-3">
+        <div className="toolbar mb-8 flex flex-wrap items-center gap-3">
           <div className="filters flex flex-wrap gap-2" role="group" aria-label="Filter projects by category">
             {filters.map((f) => (
               <button key={f} type="button" className="filter" aria-pressed={active === f} onClick={() => choose(f)}>

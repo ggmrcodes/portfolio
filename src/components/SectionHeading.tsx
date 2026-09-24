@@ -13,9 +13,9 @@ export function SectionHeading({ id, index, title, sub }: SectionHeadingProps) {
   const { ref, inView } = useReveal<HTMLHeadingElement>()
 
   return (
-    <div className="mb-10">
+    <div className="section-head relative mb-10">
       <div className="flex items-center gap-4">
-        <span data-fun className="font-pixel text-[10px] text-accent" aria-hidden="true">
+        <span className="section-index font-pixel text-[10px] text-accent" aria-hidden="true">
           {index}
         </span>
         <h2

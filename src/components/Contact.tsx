@@ -7,7 +7,7 @@ import { SectionHeading } from './SectionHeading'
 
 export function Contact() {
   return (
-    <section id="contact" aria-labelledby="contact-title" className="scroll-mt-20 py-24">
+    <section id="contact" aria-labelledby="contact-title" className="scroll-mt-20 py-24 open">
       <div className="mx-auto max-w-6xl px-5">
         <SectionHeading id="contact" index="04" title="Contact" sub="Email is the fastest way to reach me. I read everything." />
 
@@ -15,7 +15,7 @@ export function Contact() {
           <PixelFrame title="contact.sh">
             <div className="grid gap-8 p-6 md:grid-cols-[1fr_auto] md:items-center md:p-10">
               <div>
-                <p className="font-pixel text-[clamp(0.8rem,2.2vw,1.1rem)] uppercase leading-relaxed">
+                <p className="font-pixel text-[clamp(0.8rem,2.2vw,1.25rem)] uppercase leading-relaxed">
                   Let&apos;s build something
                   <br />
                   that actually helps someone.

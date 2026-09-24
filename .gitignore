@@ -30,3 +30,5 @@ FSAB - Project Requirement.pdf
 .claude/
 .impeccable/
 assets-src/
+.vercel
+.env*

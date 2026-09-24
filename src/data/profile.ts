@@ -15,7 +15,7 @@ export const profile = {
   // The footer "view source" link is hidden while this is empty.
   sourceRepo: 'https://github.com/ggmrcodes/portfolio',
 
-  // TODO: optional. Put a PDF in /public and set e.g. '/resume.pdf'.
+  // Optional. Put a PDF in /public and set e.g. '/resume.pdf'.
   // The resume button is hidden while it is empty.
   resumeUrl: '',
 

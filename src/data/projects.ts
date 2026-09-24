@@ -96,7 +96,7 @@ export const projects: Project[] = [
       'Prediction tool that uses minimax search over projected points to choose Fantasy Premier League squads and transfers.',
     highlights: ['Treats the weekly transfer decision as a game against future fixtures rather than a single-week greedy pick.'],
     stack: ['Python', 'Game theory', 'Data analysis'],
-    // TODO: add the repo URL. Links are hidden while missing.
+    // No public repo yet, so the card shows no links.
   },
   {
     slug: 'doc-search',

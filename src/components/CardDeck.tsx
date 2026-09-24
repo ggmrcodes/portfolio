@@ -15,9 +15,10 @@ import { SETTLE, THROW, isAtRest, project, rubberband, stepSpring, type SpringCo
  *                   requestAnimationFrame loop, and writes `style.transform`
  *                   directly. Dragging never re-renders React.
  *   <CardDeck>      renders the cards and forwards pointer and key events.
- *                   Its only state is the card order, because that is the
- *                   only thing that changes what is rendered (z-index, the
- *                   counter, the screen-reader announcement).
+ *                   It re-renders only when the card order changes (z-index,
+ *                   the counter, the screen-reader announcement) or when the
+ *                   first touch hides the hint. The engine sits in useState
+ *                   only so it is created once.
  */
 const AXES = ['x', 'y', 'rotate', 'scale', 'opacity'] as const
 type Axis = (typeof AXES)[number]

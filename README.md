@@ -1,10 +1,8 @@
-# <img src="public/favicon.svg" width="26" align="center" alt=""> Hatayasit Aroonvanichporn · Portfolio
+# <img src="public/favicon.svg" width="26" alt=""> Hatayasit Aroonvanichporn · Portfolio
 
 My personal site, built from scratch in React and TypeScript.
 
 <h6 align="center">
-  <a href="https://www.hatayasit.com">Live site</a>
-  ·
   <a href="#-overview">What it does</a>
   ·
   <a href="#-how-to-run-it">Run it</a>
@@ -14,23 +12,23 @@ My personal site, built from scratch in React and TypeScript.
 
 <table>
 <tr>
-<td width="50%"><img src="docs/demo.gif" alt="The site loading: a voxel self-portrait wakes up, lifts its head, raises a sabre into guard, and summons a translucent Stand behind it"></td>
+<td width="50%"><img src="docs/demo.gif" alt="The site loading: a voxel self-portrait wakes up, lifts its head, raises a sabre into guard, and summons a translucent Stand, a JoJo-style spirit figure, behind it"></td>
 <td width="50%"><img src="docs/screenshot-boring.png" alt="The same page after pressing I'm boring: quiet type on white, with a card deck where the avatar was"></td>
 </tr>
 <tr>
 <td><b>Default.</b> Pixel type, a voxel self-portrait, a terminal on <kbd>`</kbd>.</td>
-<td><b>After “I’m boring”.</b> Same components, no game layer.</td>
+<td><b>After “I’m boring”.</b> Same components with the game layer switched off.</td>
 </tr>
 </table>
 
-**React 19 · TypeScript · Vite 8 · Tailwind v4 · three.js** — four runtime dependencies, no animation library.
+**React 19 · TypeScript · Vite 8 · Tailwind v4 · three.js** — at runtime, only React, three.js and Lucide's icons ship.
 
-## <img src="docs/icons/eye.svg" width="20" align="center" alt=""> Overview
+## <img src="docs/icons/eye.svg" width="20" alt=""> Overview
 
-- **Project gallery with category filters.** One `useState`. The visible list is derived from it on every render, and each project reaches `ProjectCard` through props.
-- **An in-page terminal.** <kbd>`</kbd> opens it. Eleven commands, arrow-key history, reading the same data files as the page.
-- **An "I'm boring" switch.** One attribute on `<html>`; every visual difference above is CSS keyed off it. The 3D scene is never mounted, so boring mode never downloads three.js.
-- **A card deck you can throw.** Drag, flick, catch it mid-flight. A damped spring I wrote judges a throw by where the card was *going*, not where it was let go.
+- **Project gallery with category filters.** Pick a category and the list narrows to match; each project reaches `ProjectCard` through props.
+- **An in-page terminal.** Press <kbd>`</kbd> to open it. It has eleven commands and arrow-key history, and it reads the same data files as the page.
+- **An "I'm boring" switch.** It sets one attribute on `<html>`, and every visual difference above is CSS keyed off that attribute. Boring mode never mounts the 3D scene, so it never downloads three.js either.
+- **A card deck you can throw.** Drag a card, flick it, or catch it mid-flight. On release I project where its speed would carry it, and the card only goes to the back if that point lands far enough out; otherwise a damped spring pulls it home.
 
 <details>
 <summary>What the terminal knows</summary>
@@ -52,7 +50,7 @@ clear            clear the screen
 
 </details>
 
-## <img src="docs/icons/terminal.svg" width="20" align="center" alt=""> How to run it
+## <img src="docs/icons/terminal.svg" width="20" alt=""> How to run it
 
 Node 22.12 or newer. Vite runs on 20.19+, but the test runner needs 22.12.
 
@@ -60,9 +58,11 @@ Node 22.12 or newer. Vite runs on 20.19+, but the test runner needs 22.12.
 npm install
 npm run dev      # http://localhost:5173
 npm test         # 8 unit tests over the spring maths
+npm run lint     # oxlint
+npm run typecheck
 ```
 
-## <img src="docs/icons/folder-tree.svg" width="20" align="center" alt=""> How it is put together
+## <img src="docs/icons/folder-tree.svg" width="20" alt=""> How it is put together
 
 ```
 src/
@@ -73,27 +73,27 @@ src/
   index.css    theme tokens, retro primitives, motion
 ```
 
-Every string on the page comes from `src/data/`; no component hard-codes text. Three of the four files in `lib/` import no React at all, which is what makes them straightforward to test.
+The content lives in `src/data/`: the projects, the experience, the bio, even what the terminal prints. Components keep only the small labels around it. Three of the four files in `lib/` never import React, which is why they are easy to test.
 
-## <img src="docs/icons/hammer.svg" width="20" align="center" alt=""> My contribution
+## <img src="docs/icons/hammer.svg" width="20" alt=""> My contribution
 
-Everything here is mine. The old version came out of a website builder; this one is hand-written, so I can explain any line of it.
+I led the architecture and design and used an agentic CLI tool to move faster on implementation. Every change went through my review, and I can explain how each file works. These four are where I'd start.
 
-- **`components/Projects.tsx`** — 64 lines, one `useState`, no reducer and no memoisation. The main interaction, and the part I would most like to be asked about.
-- **`lib/spring.ts` + `components/CardDeck.tsx`** — one `requestAnimationFrame` loop writes `transform` straight to the cards, so dragging never re-renders React. Its only state is the card order.
-- **`lib/poseStand.ts`** — the Silver Chariot model has no skeleton, so I pose its arms by rotating vertices about virtual shoulder and elbow joints.
-- **`components/Nav.tsx` + `public/favicon.svg`** — the mark, a building, because Building is what people call me. One path with an even-odd fill, so the windows are real holes.
+- **`components/Projects.tsx`** — the main interaction, in 64 lines around a single `useState`. In boring mode the filter change runs inside a View Transition, so the selected button slides across. This is the file I would most like to be asked about.
+- **`lib/spring.ts` + `components/CardDeck.tsx`** — one `requestAnimationFrame` loop writes `transform` straight to the cards, so dragging never re-renders React. The component re-renders only when the card order changes or the hint goes away.
+- **`lib/poseStand.ts`** — the Silver Chariot model (the Stand) has no skeleton, so I pose its arms by rotating vertices about virtual shoulder and elbow joints.
+- **`components/Nav.tsx` + `public/favicon.svg`** — my nickname is Building, so the logo is one. It is a single path with an even-odd fill, which makes the windows real holes.
 
-## <img src="docs/icons/lightbulb.svg" width="20" align="center" alt=""> What I learned
+## <img src="docs/icons/lightbulb.svg" width="20" alt=""> What I learned
 
-Keeping the terminal explainable was the hard part. My first version put everything in the component: a long `switch` on the command string, with `window.open` and theme toggles tangled into the `setState` calls. It worked, but I could not describe it in one breath.
+Keeping the terminal explainable was the hard part. My first version put everything in the component: a long `switch` on the command string, with `window.open` and theme toggles tangled into the `setState` calls. It worked, but I couldn't explain it without scrolling up and down the file.
 
-Splitting it fixed that. `runCommand()` in `src/lib/terminal.ts` takes the input and returns `{ lines, action? }`, where `action` is a plain object like `{ type: 'open', url }`. It touches neither React nor the DOM; the component keeps state, calls it, and carries out whatever comes back. Adding a command is now one `case` in a file that has never imported React.
+So I split it in two. `runCommand()` in `src/lib/terminal.ts` takes the input and returns `{ lines, action? }`, where `action` is a plain object such as `{ type: 'open', url }`, and it never touches React or the DOM. The component holds the state, calls `runCommand()`, and carries out whatever action comes back. Adding a command now means adding one `case` to `terminal.ts`.
 
-## <img src="docs/icons/book-open.svg" width="20" align="center" alt=""> References
+## <img src="docs/icons/book-open.svg" width="20" alt=""> References
 
 - Scaffolded from the [Vite](https://vite.dev) `react-ts` template.
-- The deck's spring maths comes from Apple's [Designing Fluid Interfaces](https://developer.apple.com/videos/play/wwdc2018/803/), WWDC 2018. The code is my own.
+- The deck's spring maths comes from Apple's [Designing Fluid Interfaces](https://developer.apple.com/videos/play/wwdc2018/803/), WWDC 2018.
 - The Stand behind the avatar is [Silver Chariot](https://sketchfab.com/3d-models/silver-chariot-86a6bf8c3ece40818f7042dbbe5720c6) by [xugangruix](https://sketchfab.com/xugangruix), [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/); the character is from *JoJo's Bizarre Adventure*.
 - The [Brown coat of arms](https://commons.wikimedia.org/wiki/File:Brown_Coat_of_Arms.svg) on the hoodie, CC BY-SA 4.0.
 - Type: Press Start 2P, Martian Mono, Manrope, Inconsolata — all OFL, licences in `public/fonts/`. Heading icons from [Lucide](https://lucide.dev) (ISC).
